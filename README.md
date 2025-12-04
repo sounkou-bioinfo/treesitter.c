@@ -71,7 +71,7 @@ tree
 #> <truncated>
 ```
 
-## Technical Details
+## Details
 
   - **ABI Version**: 14 (compatible with treesitter 0.3.0)
   - **Grammar Source**: <https://github.com/tree-sitter/tree-sitter-c>
@@ -79,4 +79,4 @@ tree
 
 ## License
 
-MIT + file LICENSE
+GPL-3
