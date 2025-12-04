@@ -4,7 +4,7 @@
 \name{treesitter.c-package}
 \alias{treesitter.c}
 \alias{treesitter.c-package}
-\title{treesitter.c: 'R' bindings to the 'C' Grammar for Tree-Sitter}
+\title{treesitter.c: 'R' Bindings to the 'C' Grammar for Tree-Sitter}
 \description{
 Provides bindings to a 'C' grammar for Tree-sitter, to be used alongside the 'treesitter' package. Tree-sitter builds concrete syntax trees for source files and can efficiently update them as files are edited.
 }
@@ -12,11 +12,13 @@ Provides bindings to a 'C' grammar for Tree-sitter, to be used alongside the 'tr
 Useful links:
 \itemize{
   \item \url{https://sounkou-bioinfo.github.io/treesitter.c/}
+  \item \url{https://github.com/sounkou-bioinfo/treesitter.c}
+  \item Report bugs at \url{https://github.com/sounkou-bioinfo/treesitter.c/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Sounkou Mahamane Mahamane \email{stoure@example.com}
+\strong{Maintainer}: Sounkou Mahamane Toure \email{sounkoutoure@gmail.com}
 
 Other contributors:
 \itemize{
