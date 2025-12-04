@@ -2,7 +2,7 @@ Package: treesitter.c
 Title: 'R' bindings to the 'C' Grammar for Tree-Sitter
 Version: 0.0.1
 Authors@R: c(
-    person(given = "Sounkou Mahamane", family = "Mahamane", email = "stoure@example.com", role = c("aut", "cre")),
+    person(given = "Sounkou Mahamane", family = "Toure", email = "sounkoutoure@gmail.com", role = c("aut", "cre")),
     person("Tree-sitter authors", role = "cph", comment = "Tree-sitter C grammar"))
 Description: Provides bindings to a 'C' grammar for Tree-sitter, to be used
     alongside the 'treesitter' package. Tree-sitter builds concrete syntax trees
@@ -14,4 +14,5 @@ Suggests: testthat (>= 3.0.0)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
-URL: https://sounkou-bioinfo.github.io/treesitter.c/
+URL: https://sounkou-bioinfo.github.io/treesitter.c, https://github.com/sounkou-bioinfo/treesitter.c
+BugReports: https://github.com/sounkou-bioinfo/treesitter.c/issues
