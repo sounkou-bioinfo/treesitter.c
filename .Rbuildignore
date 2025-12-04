@@ -1,0 +1,11 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^README\.Rmd$
+^README\.html$
+^LICENSE\.md$
+^\.git$
+^\.gitignore$
+^bootstrap\.R$
+^tree-sitter-c$
+\.o$
+\.so$

@@ -1,0 +1,51 @@
+---
+output: github_document
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  out.width = "100%"
+)
+```
+
+# treesitter.c
+
+C grammar for the R treesitter package.
+
+## Installation
+
+```{r eval=FALSE}
+# Install treesitter.c from GitHub
+remotes::install_git("https://github.com/sounkou-bioinfo/treesitter.c")
+```
+
+## Usage
+```{r eval=TRUE}
+library(treesitter)
+library(treesitter.c)
+
+c_language <- language()
+parser <- parser(c_language)
+
+code <- "
+struct Point {
+  int x[MAX_SIZE];
+  int y;
+};
+"
+
+tree <- parser_parse(parser, code)
+tree
+```
+
+## Details
+
+- **ABI Version**: 14 (compatible with treesitter 0.3.0)
+- **Grammar Source**: https://github.com/tree-sitter/tree-sitter-c
+- **Parser**: Pre-generated parser.c from upstream (~3.7 MB)
+
+## License
+
+GPL-3
