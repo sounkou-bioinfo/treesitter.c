@@ -42,9 +42,7 @@ tree
 
 ## Details
 
-- **ABI Version**: 14 (compatible with treesitter 0.3.0)
-- **Grammar Source**: https://github.com/tree-sitter/tree-sitter-c
-- **Parser**: Pre-generated parser.c from upstream (~3.7 MB)
+ABI Version** 14 for compatible with treesitter package version 0.3.0. C grammar source used for boostraping was downloaded from https://github.com/tree-sitter/tree-sitter-c. The pre-generated parser.c from upstream is ~3.7 MB.
 
 ## License
 
