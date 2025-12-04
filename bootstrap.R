@@ -27,10 +27,11 @@ file.copy(file.path(grammar_dir, "src", "tree_sitter", "parser.h"),
   overwrite = TRUE
 )
 
-# Patch pragmas in src/parser.c for CRAN compliance
+# Remove pragmas in src/parser.c for CRAN compliance
 if (file.exists("src/parser.c")) {
   lines <- readLines("src/parser.c")
-  lines <- gsub("#pragma", "# pragma", lines)
+  # Remove all pragma lines completely
+  lines <- lines[!grepl("^\\s*#\\s*pragma", lines)]
   writeLines(lines, "src/parser.c")
 }
 
