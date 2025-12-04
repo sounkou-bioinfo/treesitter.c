@@ -9,3 +9,7 @@
 ^tree-sitter-c$
 \.o$
 \.so$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$

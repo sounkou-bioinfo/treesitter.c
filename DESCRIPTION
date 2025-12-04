@@ -13,3 +13,4 @@ Suggests: testthat (>= 3.0.0), treesitter
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+URL: https://sounkou-bioinfo.github.io/treesitter.c/
