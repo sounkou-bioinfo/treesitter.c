@@ -9,7 +9,8 @@ Description: Provides bindings to a 'C' grammar for Tree-sitter, to be used
     for source files and can efficiently update them as files are edited.
 License: GPL-3
 Depends: R (>= 4.3.0)
-Suggests: testthat (>= 3.0.0), treesitter
+Imports: treesitter
+Suggests: testthat (>= 3.0.0)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
