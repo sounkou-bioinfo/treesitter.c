@@ -3,9 +3,11 @@
 grammar_dir <- "tree-sitter-c"
 
 if (!dir.exists(grammar_dir)) {
-  system2("git", c("clone", "--depth", "1", 
-                   "https://github.com/tree-sitter/tree-sitter-c", 
-                   grammar_dir))
+  system2("git", c(
+    "clone", "--depth", "1",
+    "https://github.com/tree-sitter/tree-sitter-c",
+    grammar_dir
+  ))
 }
 
 old_dir <- setwd(grammar_dir)
@@ -16,10 +18,21 @@ setwd(old_dir)
 if (!dir.exists("src")) dir.create("src")
 if (!dir.exists("src/tree_sitter")) dir.create("src/tree_sitter")
 
-file.copy(file.path(grammar_dir, "src", "parser.c"), 
-          "src/parser.c", overwrite = TRUE)
-file.copy(file.path(grammar_dir, "src", "tree_sitter", "parser.h"), 
-          "src/tree_sitter/parser.h", overwrite = TRUE)
+file.copy(file.path(grammar_dir, "src", "parser.c"),
+  "src/parser.c",
+  overwrite = TRUE
+)
+file.copy(file.path(grammar_dir, "src", "tree_sitter", "parser.h"),
+  "src/tree_sitter/parser.h",
+  overwrite = TRUE
+)
+
+# Patch pragmas in src/parser.c for CRAN compliance
+if (file.exists("src/parser.c")) {
+  lines <- readLines("src/parser.c")
+  lines <- gsub("#pragma", "# pragma", lines)
+  writeLines(lines, "src/parser.c")
+}
 
 unlink(grammar_dir, recursive = TRUE)
 
