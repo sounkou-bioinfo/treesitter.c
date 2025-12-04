@@ -34,14 +34,14 @@ tree <- parser_parse(parser, code)
 tree
 #> <tree_sitter_tree>
 #> 
-#> ── Text ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── Text ─────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> struct Point {
 #>   int x[MAX_SIZE];
 #>   int y;
 #> };
 #> 
 #> 
-#> ── S-Expression ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── S-Expression ─────────────────────────────────────────────────────────────────────────────────────────────────
 #> (translation_unit [(1, 0), (5, 0)]
 #>   (struct_specifier [(1, 0), (4, 1)]
 #>     "struct" [(1, 0), (1, 6)]
@@ -72,9 +72,16 @@ tree
 
 ## Details
 
-- **ABI Version**: 14 (compatible with treesitter 0.3.0)
-- **Grammar Source**: <https://github.com/tree-sitter/tree-sitter-c>
-- **Parser**: Pre-generated parser.c from upstream (~3.7 MB)
+**ABI Version 14**, compatible with treesitter package version 0.3.0.
+The C grammar source used for bootstrapping was downloaded from
+<https://github.com/tree-sitter/tree-sitter-c>. The pre-generated
+`parser.c` from upstream is ~3.7 MB and contains pragma directives that
+trigger CRAN check warnings.
+
+During bootstrap (`bootstrap.R`), all `#pragma` directives are
+automatically removed from `parser.c` to ensure CRAN compliance. This
+includes pragmas for diagnostic control and optimization settings that
+are not portable across compilers.
 
 ## License
 

@@ -82,14 +82,14 @@
 <span><span class="va">tree</span></span>
 <span><span class="co">#&gt; &lt;tree_sitter_tree&gt;</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Text ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; ── Text ─────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; struct Point {</span></span>
 <span><span class="co">#&gt;   int x[MAX_SIZE];</span></span>
 <span><span class="co">#&gt;   int y;</span></span>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── S-Expression ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; ── S-Expression ─────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; (translation_unit [(1, 0), (5, 0)]</span></span>
 <span><span class="co">#&gt;   (struct_specifier [(1, 0), (4, 1)]</span></span>
 <span><span class="co">#&gt;     "struct" [(1, 0), (1, 6)]</span></span>
@@ -120,15 +120,8 @@
 <div class="section level2">
 <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a>
 </h2>
-<ul>
-<li>
-<strong>ABI Version</strong>: 14 (compatible with treesitter 0.3.0)</li>
-<li>
-<strong>Grammar Source</strong>: <a href="https://github.com/tree-sitter/tree-sitter-c" class="external-link uri">https://github.com/tree-sitter/tree-sitter-c</a>
-</li>
-<li>
-<strong>Parser</strong>: Pre-generated parser.c from upstream (~3.7 MB)</li>
-</ul>
+<p><strong>ABI Version 14</strong>, compatible with treesitter package version 0.3.0. The C grammar source used for bootstrapping was downloaded from <a href="https://github.com/tree-sitter/tree-sitter-c" class="external-link uri">https://github.com/tree-sitter/tree-sitter-c</a>. The pre-generated <code>parser.c</code> from upstream is ~3.7 MB and contains pragma directives that trigger CRAN check warnings.</p>
+<p>During bootstrap (<code>bootstrap.R</code>), all <code>#pragma</code> directives are automatically removed from <code>parser.c</code> to ensure CRAN compliance. This includes pragmas for diagnostic control and optimization settings that are not portable across compilers.</p>
 </div>
 <div class="section level2">
 <h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
