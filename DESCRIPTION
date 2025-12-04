@@ -5,7 +5,7 @@ Authors@R: c(
     person(given = "Sounkou Mahamane", family = "Mahamane", email = "stoure@example.com", role = c("aut", "cre")),
     person("Tree-sitter authors", role = "cph", comment = "Tree-sitter C grammar"))
 Description: Provides bindings to a 'C' grammar for Tree-sitter, to be used
-    alongside the treesitter package. Tree-sitter builds concrete syntax trees
+    alongside the 'treesitter' package. Tree-sitter builds concrete syntax trees
     for source files and can efficiently update them as files are edited.
 License: GPL-3
 Depends: R (>= 4.3.0)
