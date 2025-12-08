@@ -42,10 +42,101 @@
 
       <dl><dt>
 
+          <code><a href="get_defines_from_file.html">get_defines_from_file()</a></code>
+
+        </dt>
+        <dd>This function will use the configured C compiler to list macro definitions (<code>-dM -E</code>) if <code>use_cpp = TRUE</code> and a compiler is available; otherwise, a simple scan of <code>#define</code> lines is used as a fallback.</dd>
+
+        <dt>
+
+          <code><a href="get_enum_nodes.html">get_enum_nodes()</a></code>
+
+        </dt>
+        <dd>Extract enum names from a parsed header</dd>
+
+        <dt>
+
+          <code><a href="get_function_nodes.html">get_function_nodes()</a></code>
+
+        </dt>
+        <dd>Extract function names (declarations and definitions) from a root</dd>
+
+        <dt>
+
+          <code><a href="get_globals_from_root.html">get_globals_from_root()</a></code>
+
+        </dt>
+        <dd>Extract global variable names from a parsed tree root</dd>
+
+        <dt>
+
+          <code><a href="get_struct_members.html">get_struct_members()</a></code>
+
+        </dt>
+        <dd>Extract members of structs (including nested anonymous struct members)</dd>
+
+        <dt>
+
+          <code><a href="get_struct_nodes.html">get_struct_nodes()</a></code>
+
+        </dt>
+        <dd>Extract struct names from a parsed tree root</dd>
+
+        <dt>
+
+          <code><a href="get_union_nodes.html">get_union_nodes()</a></code>
+
+        </dt>
+        <dd>Extract union names from a parsed header</dd>
+
+        <dt>
+
           <code><a href="language.html">language()</a></code>
 
         </dt>
         <dd>tree-sitter language for C</dd>
+
+        <dt>
+
+          <code><a href="parse_header_text.html">parse_header_text()</a></code>
+
+        </dt>
+        <dd>Convert character content of a header file into a tree-sitter root</dd>
+
+        <dt>
+
+          <code><a href="parse_headers_collect.html">parse_headers_collect()</a></code>
+
+        </dt>
+        <dd>Parse a directory of headers and return named list of data.frames with functions, structs, struct members, enums, unions, globals, and macros.</dd>
+
+        <dt>
+
+          <code><a href="parse_r_include_headers.html">parse_r_include_headers()</a></code>
+
+        </dt>
+        <dd>Parse C header files for function declarations using tree-sitter</dd>
+
+        <dt>
+
+          <code><a href="preprocess_header.html">preprocess_header()</a></code>
+
+        </dt>
+        <dd>Run the C preprocessor on <code>file</code> using the provided compiler</dd>
+
+        <dt>
+
+          <code><a href="preprocess_headers.html">preprocess_headers()</a></code>
+
+        </dt>
+        <dd>Preprocess a set of header files found under <code>dir</code></dd>
+
+        <dt>
+
+          <code><a href="r_cc.html">r_cc()</a></code>
+
+        </dt>
+        <dd>Return the default R-configured C compiler (possibly with flags)</dd>
       </dl></div>
   </main></div>
 

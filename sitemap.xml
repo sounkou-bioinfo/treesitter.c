@@ -2,8 +2,21 @@
 <url><loc>https://sounkou-bioinfo.github.io/treesitter.c/404.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/treesitter.c/authors.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/treesitter.c/index.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/get_defines_from_file.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/get_enum_nodes.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/get_function_nodes.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/get_globals_from_root.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/get_struct_members.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/get_struct_nodes.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/get_union_nodes.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/index.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/language.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/parse_header_text.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/parse_headers_collect.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/parse_r_include_headers.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/preprocess_header.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/preprocess_headers.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/r_cc.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/treesitter.c-package.html</loc></url>
 </urlset>
 

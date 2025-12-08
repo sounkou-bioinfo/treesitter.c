@@ -82,14 +82,14 @@
 <span><span class="va">tree</span></span>
 <span><span class="co">#&gt; &lt;tree_sitter_tree&gt;</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Text ─────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; ── Text ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; struct Point {</span></span>
 <span><span class="co">#&gt;   int x[MAX_SIZE];</span></span>
 <span><span class="co">#&gt;   int y;</span></span>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── S-Expression ─────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; ── S-Expression ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; (translation_unit [(1, 0), (5, 0)]</span></span>
 <span><span class="co">#&gt;   (struct_specifier [(1, 0), (4, 1)]</span></span>
 <span><span class="co">#&gt;     "struct" [(1, 0), (1, 6)]</span></span>
@@ -118,9 +118,119 @@
 <span><span class="co">#&gt; &lt;truncated&gt;</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a>
+<h2 id="parsing-r-headers">Parsing R headers<a class="anchor" aria-label="anchor" href="#parsing-r-headers"></a>
 </h2>
-<p><strong>ABI Version 14</strong>, compatible with treesitter package version 0.3.0. The C grammar source used for bootstrapping was downloaded from <a href="https://github.com/tree-sitter/tree-sitter-c" class="external-link uri">https://github.com/tree-sitter/tree-sitter-c</a>. The pre-generated <code>parser.c</code> from upstream is ~3.7 MB and contains pragma directives that trigger CRAN check warnings.</p>
+<p>Parse R headers installed on this machine, without preprocessing:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Parse R headers installed on this machine (no preprocessing)</span></span>
+<span><span class="va">hdr_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/parse_r_include_headers.html">parse_r_include_headers</a></span><span class="op">(</span></span>
+<span>  dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home</a></span><span class="op">(</span><span class="st">"include"</span><span class="op">)</span>,</span>
+<span>  preprocess <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Show the first few discovered functions matching “Rf”:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">hdr_df</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Rf"</span>, x <span class="op">=</span> <span class="va">hdr_df</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="op">]</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                             name                                        file</span></span>
+<span><span class="co">#&gt; 25  Rf_removeTaskCallbackByIndex      /usr/share/R/include/R_ext/Callbacks.h</span></span>
+<span><span class="co">#&gt; 26   Rf_removeTaskCallbackByName      /usr/share/R/include/R_ext/Callbacks.h</span></span>
+<span><span class="co">#&gt; 57                     Rf_onintr /usr/share/R/include/R_ext/GraphicsDevice.h</span></span>
+<span><span class="co">#&gt; 59                  Rf_ucstoutf8 /usr/share/R/include/R_ext/GraphicsDevice.h</span></span>
+<span><span class="co">#&gt; 236                  S_Rf_divset  /usr/share/R/include/R_ext/stats_package.h</span></span>
+<span><span class="co">#&gt; 242                  S_Rf_divset    /usr/share/R/include/R_ext/stats_stubs.h</span></span>
+<span><span class="co">#&gt; 273             Rf_initEmbeddedR            /usr/share/R/include/Rembedded.h</span></span>
+<span><span class="co">#&gt; 274              Rf_endEmbeddedR            /usr/share/R/include/Rembedded.h</span></span>
+<span><span class="co">#&gt; 275              Rf_initialize_R            /usr/share/R/include/Rembedded.h</span></span>
+<span><span class="co">#&gt; 282            Rf_KillAllDevices            /usr/share/R/include/Rembedded.h</span></span>
+<span><span class="co">#&gt;     line        kind</span></span>
+<span><span class="co">#&gt; 25    66 declaration</span></span>
+<span><span class="co">#&gt; 26    67 declaration</span></span>
+<span><span class="co">#&gt; 57   979 declaration</span></span>
+<span><span class="co">#&gt; 59   990 declaration</span></span>
+<span><span class="co">#&gt; 236   56 declaration</span></span>
+<span><span class="co">#&gt; 242   41  definition</span></span>
+<span><span class="co">#&gt; 273   32 declaration</span></span>
+<span><span class="co">#&gt; 274   33 declaration</span></span>
+<span><span class="co">#&gt; 275   42 declaration</span></span>
+<span><span class="co">#&gt; 282   50 declaration</span></span></code></pre></div>
+<p>If you have a C compiler available and want to preprocess macros (recommended for headers that use macros), enable <code>preprocess = TRUE</code>. Prefer to use the helper <code><a href="reference/r_cc.html">r_cc()</a></code> to detect the compiler automatically.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Check for a compiler and use include_dirs so the preprocessor can find nested headers</span></span>
+<span><span class="va">cc</span> <span class="op">&lt;-</span> <span class="fu">treesitter.c</span><span class="fu">::</span><span class="fu"><a href="reference/r_cc.html">r_cc</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">hdr_df_pp</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/parse_r_include_headers.html">parse_r_include_headers</a></span><span class="op">(</span></span>
+<span>    dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home</a></span><span class="op">(</span><span class="st">"include"</span><span class="op">)</span>,</span>
+<span>    preprocess <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    include_dirs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home</a></span><span class="op">(</span><span class="st">"include"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="va">hdr_df_pp</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Rf"</span>, x <span class="op">=</span> <span class="va">hdr_df_pp</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="op">]</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                  name                                   file line        kind</span></span>
+<span><span class="co">#&gt; 1483         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2522 declaration</span></span>
+<span><span class="co">#&gt; 1486       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2528 declaration</span></span>
+<span><span class="co">#&gt; 1495       Rf_revsort /usr/share/R/include/R_ext/Callbacks.h 2567 declaration</span></span>
+<span><span class="co">#&gt; 1496        Rf_iPsort /usr/share/R/include/R_ext/Callbacks.h 2568 declaration</span></span>
+<span><span class="co">#&gt; 1497        Rf_rPsort /usr/share/R/include/R_ext/Callbacks.h 2569 declaration</span></span>
+<span><span class="co">#&gt; 1498        Rf_cPsort /usr/share/R/include/R_ext/Callbacks.h 2570 declaration</span></span>
+<span><span class="co">#&gt; 1503   Rf_StringFalse /usr/share/R/include/R_ext/Callbacks.h 2586 declaration</span></span>
+<span><span class="co">#&gt; 1504    Rf_StringTrue /usr/share/R/include/R_ext/Callbacks.h 2587 declaration</span></span>
+<span><span class="co">#&gt; 1505 Rf_isBlankString /usr/share/R/include/R_ext/Callbacks.h 2588 declaration</span></span>
+<span><span class="co">#&gt; 1557        Rf_asChar /usr/share/R/include/R_ext/Callbacks.h 2922 declaration</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="api-examples">API Examples<a class="anchor" aria-label="anchor" href="#api-examples"></a>
+</h2>
+<p>The following concise examples demonstrate extracting specific information (functions, parameters, structs, macros) using the API.</p>
+<p>Simple parse and extract functions: parse a small header string and extract functions with parameter types.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">txt</span> <span class="op">&lt;-</span> <span class="st">"int foo(int a, const char* s);</span></span>
+<span><span class="st">static inline int bar(void) { return 1; }"</span></span>
+<span><span class="va">root</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/parse_header_text.html">parse_header_text</a></span><span class="op">(</span><span class="va">txt</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/get_function_nodes.html">get_function_nodes</a></span><span class="op">(</span><span class="va">root</span>, extract_params <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   capture_name text start_line start_col       params</span></span>
+<span><span class="co">#&gt; 1    decl_name  foo          1         5 int, con....</span></span>
+<span><span class="co">#&gt; 2     def_name  bar          2        19         void</span></span></code></pre></div>
+<p>Get structs and members:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">txt</span> <span class="op">&lt;-</span> <span class="st">"struct T { unsigned int x:1; int y; };"</span></span>
+<span><span class="va">root</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/parse_header_text.html">parse_header_text</a></span><span class="op">(</span><span class="va">txt</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/get_struct_nodes.html">get_struct_nodes</a></span><span class="op">(</span><span class="va">root</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   capture_name text start_line</span></span>
+<span><span class="co">#&gt; 1  struct_name    T          1</span></span>
+<span><span class="fu"><a href="reference/get_struct_members.html">get_struct_members</a></span><span class="op">(</span><span class="va">root</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   struct_name member_name member_type bitfield nested_members</span></span>
+<span><span class="co">#&gt; 1           T           x        &lt;NA&gt;        1           &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2           T           y         int     &lt;NA&gt;           &lt;NA&gt;</span></span></code></pre></div>
+<p>Collect a directory with all kinds using <code>parse_headers_collect</code></p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/parse_headers_collect.html">parse_headers_collect</a></span><span class="op">(</span>dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home</a></span><span class="op">(</span><span class="st">"include"</span><span class="op">)</span>, preprocess <span class="op">=</span> <span class="cn">FALSE</span>, extract_params <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "functions"      "structs"        "struct_members" "enums"         </span></span>
+<span><span class="co">#&gt; [5] "unions"         "globals"        "defines"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">functions</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                                  file capture_name start_line start_col</span></span>
+<span><span class="co">#&gt; 1 /usr/share/R/include/R_ext/Altrep.h    decl_name         47         1</span></span>
+<span><span class="co">#&gt; 2 /usr/share/R/include/R_ext/Altrep.h    decl_name         50         1</span></span>
+<span><span class="co">#&gt; 3 /usr/share/R/include/R_ext/Altrep.h    decl_name         52         1</span></span>
+<span><span class="co">#&gt; 4 /usr/share/R/include/R_ext/Altrep.h    decl_name         54         1</span></span>
+<span><span class="co">#&gt; 5 /usr/share/R/include/R_ext/Altrep.h    decl_name         56         1</span></span>
+<span><span class="co">#&gt; 6 /usr/share/R/include/R_ext/Altrep.h    decl_name         58         1</span></span>
+<span><span class="co">#&gt;         params                    name</span></span>
+<span><span class="co">#&gt; 1 R_altrep....            R_new_altrep</span></span>
+<span><span class="co">#&gt; 2 const ch....  R_make_altstring_class</span></span>
+<span><span class="co">#&gt; 3 const ch.... R_make_altinteger_class</span></span>
+<span><span class="co">#&gt; 4 const ch....    R_make_altreal_class</span></span>
+<span><span class="co">#&gt; 5 const ch.... R_make_altlogical_class</span></span>
+<span><span class="co">#&gt; 6 const ch....     R_make_altraw_class</span></span>
+<span><span class="co"># Optional: inspect macros from a single header</span></span>
+<span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home</a></span><span class="op">(</span><span class="st">"include"</span><span class="op">)</span>, <span class="st">"Rembedded.h"</span><span class="op">)</span></span>
+<span><span class="va">defs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_defines_from_file.html">get_defines_from_file</a></span><span class="op">(</span><span class="va">path</span>, use_cpp <span class="op">=</span> <span class="cn">TRUE</span>, ccflags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"-I"</span>, <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">defs</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "__DBL_MIN_EXP__"         "__UINT_LEAST16_MAX__"   </span></span>
+<span><span class="co">#&gt; [3] "_STDBOOL_H"              "__FLT16_HAS_QUIET_NAN__"</span></span>
+<span><span class="co">#&gt; [5] "__ATOMIC_ACQUIRE"        "__FLT128_MAX_10_EXP__"</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="details-on-the-used-grammar">Details On the Used Grammar<a class="anchor" aria-label="anchor" href="#details-on-the-used-grammar"></a>
+</h2>
+<p>treesiter ABI Version 14, compatible with treesitter package version 0.3.0. The C grammar source used for bootstrapping was downloaded from <a href="https://github.com/tree-sitter/tree-sitter-c" class="external-link uri">https://github.com/tree-sitter/tree-sitter-c</a>. The pre-generated <code>parser.c</code> from upstream is ~3.7 MB and contains pragma directives that trigger CRAN check warnings.</p>
 <p>During bootstrap (<code>bootstrap.R</code>), all <code>#pragma</code> directives are automatically removed from <code>parser.c</code> to ensure CRAN compliance. This includes pragmas for diagnostic control and optimization settings that are not portable across compilers.</p>
 </div>
 <div class="section level2">
