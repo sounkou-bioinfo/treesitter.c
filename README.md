@@ -118,16 +118,12 @@ Prefer to use the helper `r_cc()` to detect the compiler automatically.
 ``` r
 # Check for a compiler and use include_dirs so the preprocessor can find nested headers
 cc <- treesitter.c::r_cc()
-if (nzchar(cc)) {
-  hdr_df_pp <- parse_r_include_headers(
+hdr_df_pp <- parse_r_include_headers(
     dir = R.home("include"),
     preprocess = TRUE,
     include_dirs = R.home("include")
   )
-  hdr_df_pp[grepl("Rf", x = hdr_df_pp$name), ] |> head(10)
-} else {
-  message("No C compiler found: preprocess example skipped")
-}
+hdr_df_pp[grepl("Rf", x = hdr_df_pp$name), ] |> head(10)
 #>                  name                                   file line        kind
 #> 1483         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2522 declaration
 #> 1486       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2528 declaration
@@ -139,6 +135,70 @@ if (nzchar(cc)) {
 #> 1504    Rf_StringTrue /usr/share/R/include/R_ext/Callbacks.h 2587 declaration
 #> 1505 Rf_isBlankString /usr/share/R/include/R_ext/Callbacks.h 2588 declaration
 #> 1557        Rf_asChar /usr/share/R/include/R_ext/Callbacks.h 2922 declaration
+```
+
+## API Examples
+
+The following concise examples demonstrate extracting specific
+information (functions, parameters, structs, macros) using the API.
+
+Simple parse and extract functions: parse a small header string and
+extract functions with parameter types.
+
+``` r
+txt <- "int foo(int a, const char* s);
+static inline int bar(void) { return 1; }"
+root <- parse_header_text(txt)
+get_function_nodes(root, extract_params = TRUE)
+#>   capture_name text start_line start_col       params
+#> 1    decl_name  foo          1         5 int, con....
+#> 2     def_name  bar          2        19         void
+```
+
+Get structs and members:
+
+``` r
+txt <- "struct T { unsigned int x:1; int y; };"
+root <- parse_header_text(txt)
+get_struct_nodes(root)
+#>   capture_name text start_line
+#> 1  struct_name    T          1
+get_struct_members(root)
+#>   struct_name member_name member_type bitfield nested_members
+#> 1           T           x        <NA>        1           <NA>
+#> 2           T           y         int     <NA>           <NA>
+```
+
+Collect a directory with all kinds using `parse_headers_collect`. This
+can be computationally heavy; use `dontrun{}` for README examples.
+
+``` r
+res <- parse_headers_collect(dir = R.home("include"), preprocess = FALSE, extract_params = TRUE)
+names(res)
+#> [1] "functions"      "structs"        "struct_members" "enums"         
+#> [5] "unions"         "globals"        "defines"
+head(res$functions)
+#>                                  file capture_name start_line start_col
+#> 1 /usr/share/R/include/R_ext/Altrep.h    decl_name         47         1
+#> 2 /usr/share/R/include/R_ext/Altrep.h    decl_name         50         1
+#> 3 /usr/share/R/include/R_ext/Altrep.h    decl_name         52         1
+#> 4 /usr/share/R/include/R_ext/Altrep.h    decl_name         54         1
+#> 5 /usr/share/R/include/R_ext/Altrep.h    decl_name         56         1
+#> 6 /usr/share/R/include/R_ext/Altrep.h    decl_name         58         1
+#>         params                    name
+#> 1 R_altrep....            R_new_altrep
+#> 2 const ch....  R_make_altstring_class
+#> 3 const ch.... R_make_altinteger_class
+#> 4 const ch....    R_make_altreal_class
+#> 5 const ch.... R_make_altlogical_class
+#> 6 const ch....     R_make_altraw_class
+# Optional: inspect macros from a single header
+path <- file.path(R.home("include"), "Rembedded.h")
+defs <- get_defines_from_file(path, use_cpp = TRUE, ccflags = paste("-I", dirname(path)))
+  head(defs)
+#> [1] "__DBL_MIN_EXP__"         "__UINT_LEAST16_MAX__"   
+#> [3] "_STDBOOL_H"              "__FLT16_HAS_QUIET_NAN__"
+#> [5] "__ATOMIC_ACQUIRE"        "__FLT128_MAX_10_EXP__"
 ```
 
 ## Details

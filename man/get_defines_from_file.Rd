@@ -6,7 +6,7 @@
 \code{use_cpp = TRUE} and a compiler is available; otherwise, a simple scan of \verb{#define} lines
 is used as a fallback.}
 \usage{
-get_defines_from_file(file, use_cpp = TRUE, cc = r_cc(), ccflags = r_ccflags())
+get_defines_from_file(file, use_cpp = TRUE, cc = r_cc(), ccflags = NULL)
 }
 \arguments{
 \item{file}{Path to a header file}

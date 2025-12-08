@@ -11,7 +11,7 @@ parse_headers_collect(
   pattern = c("\\\\.h$", "\\\\.H$"),
   preprocess = FALSE,
   cc = r_cc(),
-  ccflags = r_ccflags(),
+  ccflags = NULL,
   include_dirs = NULL,
   extract_params = FALSE
 )
@@ -42,8 +42,10 @@ with tidy data.frames. Useful for programmatic analysis of header
 collections.
 }
 \examples{
+\dontrun{
 if (requireNamespace("treesitter", quietly = TRUE)) {
     res <- parse_headers_collect(dir = R.home("include"), preprocess = FALSE)
     head(res$functions)
+}
 }
 }

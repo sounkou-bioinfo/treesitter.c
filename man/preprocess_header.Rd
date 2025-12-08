@@ -4,7 +4,7 @@
 \alias{preprocess_header}
 \title{Run the C preprocessor on \code{file} using the provided compiler}
 \usage{
-preprocess_header(file, cc = r_cc(), ccflags = r_ccflags())
+preprocess_header(file, cc = r_cc(), ccflags = NULL)
 }
 \arguments{
 \item{file}{Path to a header file to preprocess.}
@@ -21,6 +21,7 @@ This function runs the configured C compiler with the \code{-E} preprocessor
 flag and returns the combined preprocessed output as a single string.
 }
 \examples{
+\dontrun{
 # Check for a compiler before running an example that invokes the preprocessor
 rcc <- treesitter.c::r_cc()
 if (nzchar(rcc)) {
@@ -35,5 +36,6 @@ if (nzchar(rcc)) {
     } else {
         message("Skipping preprocess example: compiler not found on PATH")
     }
+}
 }
 }

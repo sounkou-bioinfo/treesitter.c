@@ -10,7 +10,7 @@ parse_r_include_headers(
   pattern = c("\\\\.h$", "\\\\.H$"),
   preprocess = FALSE,
   cc = r_cc(),
-  ccflags = r_ccflags(),
+  ccflags = NULL,
   include_dirs = NULL
 )
 }

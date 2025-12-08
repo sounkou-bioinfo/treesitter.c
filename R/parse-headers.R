@@ -67,6 +67,7 @@ r_ccflags <- function() {
 #' @param ccflags (Character) Additional flags to pass to the compiler.
 #' @return Character scalar with the preprocessed output of `file`.
 #' @examples
+#' \dontrun{
 #' # Check for a compiler before running an example that invokes the preprocessor
 #' rcc <- treesitter.c::r_cc()
 #' if (nzchar(rcc)) {
@@ -82,8 +83,9 @@ r_ccflags <- function() {
 #'         message("Skipping preprocess example: compiler not found on PATH")
 #'     }
 #' }
+#' }
 #' @export
-preprocess_header <- function(file, cc = r_cc(), ccflags = r_ccflags()) {
+preprocess_header <- function(file, cc = r_cc(), ccflags = NULL) {
     if (!nzchar(file) || !file.exists(file)) {
         stop("`file` must point to an existing path")
     }
@@ -137,7 +139,7 @@ preprocess_headers <- function(
   recursive = TRUE,
   pattern = c("\\.h$", "\\.H$"),
   cc = r_cc(),
-  ccflags = r_ccflags()
+  ccflags = NULL
 ) {
     files <- list.files(
         dir,
@@ -147,7 +149,8 @@ preprocess_headers <- function(
     )
     out <- list()
     for (f in files) {
-        out[[f]] <- preprocess_header(f, cc = cc, ccflags = ccflags)
+        flags <- if (is.null(ccflags) || !nzchar(ccflags)) r_ccflags() else ccflags
+        out[[f]] <- preprocess_header(f, cc = cc, ccflags = flags)
     }
     out
 }
@@ -847,7 +850,7 @@ get_defines_from_file <- function(
   file,
   use_cpp = TRUE,
   cc = r_cc(),
-  ccflags = r_ccflags()
+  ccflags = NULL
 ) {
     if (!file.exists(file)) {
         stop("file does not exist: ", file)
@@ -960,7 +963,7 @@ parse_r_include_headers <- function(
   pattern = c("\\.h$", "\\.H$"),
   preprocess = FALSE,
   cc = r_cc(),
-  ccflags = r_ccflags(),
+  ccflags = NULL,
   include_dirs = NULL
 ) {
     if (!requireNamespace("treesitter", quietly = TRUE)) {
@@ -988,6 +991,7 @@ parse_r_include_headers <- function(
     }
     out <- list()
     for (f in files) {
+        flags <- if (is.null(ccflags) || !nzchar(ccflags)) r_ccflags() else ccflags
         content <- if (preprocess) {
             # Add include dirs: ensure the header dir itself is in ccflags and append any
             # user-provided include_dirs.
@@ -997,7 +1001,7 @@ parse_r_include_headers <- function(
             if (!is.null(include_dirs)) {
                 extra <- c(extra, paste0("-I", include_dirs))
             }
-            preprocess_header(f, cc = cc, ccflags = paste(ccflags, paste(extra, collapse = " ")))
+            preprocess_header(f, cc = cc, ccflags = paste(flags, paste(extra, collapse = " ")))
         } else {
             paste(readLines(f, warn = FALSE), collapse = "\n")
         }
@@ -1070,9 +1074,11 @@ parse_r_include_headers <- function(
 #' @param extract_params Logical; whether to extract parameter types for functions. Default `FALSE`.
 #' @return A named list of data frames with components: `functions`, `structs`, `struct_members`, `enums`, `unions`, `globals`, `defines`.
 #' @examples
+#' \dontrun{
 #' if (requireNamespace("treesitter", quietly = TRUE)) {
 #'     res <- parse_headers_collect(dir = R.home("include"), preprocess = FALSE)
 #'     head(res$functions)
+#' }
 #' }
 #' @export
 parse_headers_collect <- function(
@@ -1081,7 +1087,7 @@ parse_headers_collect <- function(
   pattern = c("\\.h$", "\\.H$"),
   preprocess = FALSE,
   cc = r_cc(),
-  ccflags = r_ccflags(),
+  ccflags = NULL,
   include_dirs = NULL,
   extract_params = FALSE
 ) {
@@ -1102,6 +1108,7 @@ parse_headers_collect <- function(
     }
     agg <- list(functions = list(), structs = list(), struct_members = list(), enums = list(), unions = list(), globals = list(), defines = character(0))
     for (f in files) {
+        flags <- if (is.null(ccflags) || !nzchar(ccflags)) r_ccflags() else ccflags
         content <- if (preprocess) {
             extra <- c(paste0("-I", dirname(f)))
             if (!is.null(include_dirs)) extra <- c(extra, paste0("-I", include_dirs))

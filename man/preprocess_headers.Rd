@@ -9,7 +9,7 @@ preprocess_headers(
   recursive = TRUE,
   pattern = c("\\\\.h$", "\\\\.H$"),
   cc = r_cc(),
-  ccflags = r_ccflags()
+  ccflags = NULL
 )
 }
 \arguments{

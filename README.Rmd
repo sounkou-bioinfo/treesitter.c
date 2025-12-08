@@ -63,16 +63,46 @@ If you have a C compiler available and want to preprocess macros (recommended fo
 ```{r eval=TRUE}
 # Check for a compiler and use include_dirs so the preprocessor can find nested headers
 cc <- treesitter.c::r_cc()
-if (nzchar(cc)) {
-  hdr_df_pp <- parse_r_include_headers(
+hdr_df_pp <- parse_r_include_headers(
     dir = R.home("include"),
     preprocess = TRUE,
     include_dirs = R.home("include")
   )
-  hdr_df_pp[grepl("Rf", x = hdr_df_pp$name), ] |> head(10)
-} else {
-  message("No C compiler found: preprocess example skipped")
-}
+hdr_df_pp[grepl("Rf", x = hdr_df_pp$name), ] |> head(10)
+```
+
+## API Examples
+
+The following concise examples demonstrate extracting specific information (functions, parameters, structs, macros) using the API.
+
+Simple parse and extract functions: parse a small header string and extract functions with parameter types.
+
+```{r eval=TRUE}
+txt <- "int foo(int a, const char* s);
+static inline int bar(void) { return 1; }"
+root <- parse_header_text(txt)
+get_function_nodes(root, extract_params = TRUE)
+
+```
+
+Get structs and members:
+
+```{r eval=TRUE}
+txt <- "struct T { unsigned int x:1; int y; };"
+root <- parse_header_text(txt)
+get_struct_nodes(root)
+get_struct_members(root)
+```
+Collect a directory with all kinds using `parse_headers_collect`. This can be computationally heavy; use `dontrun{}` for README examples.
+
+```{r eval=TRUE}
+res <- parse_headers_collect(dir = R.home("include"), preprocess = FALSE, extract_params = TRUE)
+names(res)
+head(res$functions)
+# Optional: inspect macros from a single header
+path <- file.path(R.home("include"), "Rembedded.h")
+defs <- get_defines_from_file(path, use_cpp = TRUE, ccflags = paste("-I", dirname(path)))
+  head(defs)
 ```
 
 ## Details
