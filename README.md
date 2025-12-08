@@ -71,15 +71,22 @@ tree
 #> <truncated>
 ```
 
-## Parsing R headers (example)
+## Parsing R headers
+
+Parse R headers installed on this machine, without preprocessing:
 
 ``` r
-# Parse R headers installed on this machine
-hdr_df <- parse_r_include_headers(dir = R.home("include"), preprocess = FALSE)
-# Show the first few functions discovered
-hdr_df[
-  grepl("Rf", x = hdr_df$name),] |>
-      head(10)
+# Parse R headers installed on this machine (no preprocessing)
+hdr_df <- parse_r_include_headers(
+  dir = R.home("include"),
+  preprocess = FALSE
+)
+```
+
+Show the first few discovered functions matching “Rf”:
+
+``` r
+hdr_df[grepl("Rf", x = hdr_df$name), ] |> head(10)
 #>                             name                                        file
 #> 25  Rf_removeTaskCallbackByIndex      /usr/share/R/include/R_ext/Callbacks.h
 #> 26   Rf_removeTaskCallbackByName      /usr/share/R/include/R_ext/Callbacks.h
@@ -102,19 +109,25 @@ hdr_df[
 #> 274   33 declaration
 #> 275   42 declaration
 #> 282   50 declaration
+```
 
-# If you have a C compiler available and want to preprocess macros
-# (recommended for headers that use macros for types), enable preprocess = TRUE.
-# Prefer to use the helper `r_cc()` defined in the package which consults R's
-# configuration and environment. This ensures consistent behavior across
-# platforms and environments.
+If you have a C compiler available and want to preprocess macros
+(recommended for headers that use macros), enable `preprocess = TRUE`.
+Prefer to use the helper `r_cc()` to detect the compiler automatically.
+
+``` r
+# Check for a compiler and use include_dirs so the preprocessor can find nested headers
 cc <- treesitter.c::r_cc()
-# When preprocessing system headers, pass the include path via `include_dirs` so
-# the preprocessor can find nested headers and macros correctly.
-hdr_df_pp <- parse_r_include_headers(dir = R.home("include"), preprocess = TRUE, include_dirs = R.home("include"))
-hdr_df_pp[
-  grepl("Rf", x = hdr_df_pp$name),] |>
-      head(10)
+if (nzchar(cc)) {
+  hdr_df_pp <- parse_r_include_headers(
+    dir = R.home("include"),
+    preprocess = TRUE,
+    include_dirs = R.home("include")
+  )
+  hdr_df_pp[grepl("Rf", x = hdr_df_pp$name), ] |> head(10)
+} else {
+  message("No C compiler found: preprocess example skipped")
+}
 #>                  name                                   file line        kind
 #> 1483         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2522 declaration
 #> 1486       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2528 declaration
