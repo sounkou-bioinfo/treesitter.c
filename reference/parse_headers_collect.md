@@ -15,7 +15,8 @@ parse_headers_collect(
   cc = r_cc(),
   ccflags = NULL,
   include_dirs = NULL,
-  extract_params = FALSE
+  extract_params = FALSE,
+  extract_return = FALSE
 )
 ```
 

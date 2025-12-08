@@ -6,7 +6,7 @@ Returns a data frame with `capture_name`, `text`, `start_line`, and
 ## Usage
 
 ``` r
-get_function_nodes(root, extract_params = FALSE)
+get_function_nodes(root, extract_params = FALSE, extract_return = FALSE)
 ```
 
 ## Arguments

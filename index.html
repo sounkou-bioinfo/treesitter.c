@@ -130,28 +130,28 @@
 <p>Show the first few discovered functions matching “Rf”:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hdr_df</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Rf"</span>, x <span class="op">=</span> <span class="va">hdr_df</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="op">]</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                             name                                        file</span></span>
-<span><span class="co">#&gt; 25  Rf_removeTaskCallbackByIndex      /usr/share/R/include/R_ext/Callbacks.h</span></span>
-<span><span class="co">#&gt; 26   Rf_removeTaskCallbackByName      /usr/share/R/include/R_ext/Callbacks.h</span></span>
-<span><span class="co">#&gt; 57                     Rf_onintr /usr/share/R/include/R_ext/GraphicsDevice.h</span></span>
-<span><span class="co">#&gt; 59                  Rf_ucstoutf8 /usr/share/R/include/R_ext/GraphicsDevice.h</span></span>
-<span><span class="co">#&gt; 236                  S_Rf_divset  /usr/share/R/include/R_ext/stats_package.h</span></span>
-<span><span class="co">#&gt; 242                  S_Rf_divset    /usr/share/R/include/R_ext/stats_stubs.h</span></span>
-<span><span class="co">#&gt; 273             Rf_initEmbeddedR            /usr/share/R/include/Rembedded.h</span></span>
-<span><span class="co">#&gt; 274              Rf_endEmbeddedR            /usr/share/R/include/Rembedded.h</span></span>
-<span><span class="co">#&gt; 275              Rf_initialize_R            /usr/share/R/include/Rembedded.h</span></span>
-<span><span class="co">#&gt; 282            Rf_KillAllDevices            /usr/share/R/include/Rembedded.h</span></span>
-<span><span class="co">#&gt;     line        kind</span></span>
-<span><span class="co">#&gt; 25    66 declaration</span></span>
-<span><span class="co">#&gt; 26    67 declaration</span></span>
-<span><span class="co">#&gt; 57   979 declaration</span></span>
-<span><span class="co">#&gt; 59   990 declaration</span></span>
-<span><span class="co">#&gt; 236   56 declaration</span></span>
-<span><span class="co">#&gt; 242   41  definition</span></span>
-<span><span class="co">#&gt; 273   32 declaration</span></span>
-<span><span class="co">#&gt; 274   33 declaration</span></span>
-<span><span class="co">#&gt; 275   42 declaration</span></span>
-<span><span class="co">#&gt; 282   50 declaration</span></span></code></pre></div>
+<span><span class="co">#&gt;                              name                                        file</span></span>
+<span><span class="co">#&gt; 109  Rf_removeTaskCallbackByIndex      /usr/share/R/include/R_ext/Callbacks.h</span></span>
+<span><span class="co">#&gt; 110   Rf_removeTaskCallbackByName      /usr/share/R/include/R_ext/Callbacks.h</span></span>
+<span><span class="co">#&gt; 112            Rf_addTaskCallback      /usr/share/R/include/R_ext/Callbacks.h</span></span>
+<span><span class="co">#&gt; 134                      Rf_error          /usr/share/R/include/R_ext/Error.h</span></span>
+<span><span class="co">#&gt; 137                      Rf_error          /usr/share/R/include/R_ext/Error.h</span></span>
+<span><span class="co">#&gt; 140                    Rf_warning          /usr/share/R/include/R_ext/Error.h</span></span>
+<span><span class="co">#&gt; 251                     Rf_onintr /usr/share/R/include/R_ext/GraphicsDevice.h</span></span>
+<span><span class="co">#&gt; 256                  Rf_ucstoutf8 /usr/share/R/include/R_ext/GraphicsDevice.h</span></span>
+<span><span class="co">#&gt; 1031                  S_Rf_divset  /usr/share/R/include/R_ext/stats_package.h</span></span>
+<span><span class="co">#&gt; 1037                  S_Rf_divset    /usr/share/R/include/R_ext/stats_stubs.h</span></span>
+<span><span class="co">#&gt;      line        kind</span></span>
+<span><span class="co">#&gt; 109    66 declaration</span></span>
+<span><span class="co">#&gt; 110    67 declaration</span></span>
+<span><span class="co">#&gt; 112    69 declaration</span></span>
+<span><span class="co">#&gt; 134    58 declaration</span></span>
+<span><span class="co">#&gt; 137    63     unknown</span></span>
+<span><span class="co">#&gt; 140    69     unknown</span></span>
+<span><span class="co">#&gt; 251   979 declaration</span></span>
+<span><span class="co">#&gt; 256   990 declaration</span></span>
+<span><span class="co">#&gt; 1031   56 declaration</span></span>
+<span><span class="co">#&gt; 1037   41  definition</span></span></code></pre></div>
 <p>If you have a C compiler available and want to preprocess macros (recommended for headers that use macros), enable <code>preprocess = TRUE</code>. Prefer to use the helper <code><a href="reference/r_cc.html">r_cc()</a></code> to detect the compiler automatically.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check for a compiler and use include_dirs so the preprocessor can find nested headers</span></span>
@@ -163,16 +163,16 @@
 <span>  <span class="op">)</span></span>
 <span><span class="va">hdr_df_pp</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Rf"</span>, x <span class="op">=</span> <span class="va">hdr_df_pp</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="op">]</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                  name                                   file line        kind</span></span>
-<span><span class="co">#&gt; 1483         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2522 declaration</span></span>
-<span><span class="co">#&gt; 1486       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2528 declaration</span></span>
-<span><span class="co">#&gt; 1495       Rf_revsort /usr/share/R/include/R_ext/Callbacks.h 2567 declaration</span></span>
-<span><span class="co">#&gt; 1496        Rf_iPsort /usr/share/R/include/R_ext/Callbacks.h 2568 declaration</span></span>
-<span><span class="co">#&gt; 1497        Rf_rPsort /usr/share/R/include/R_ext/Callbacks.h 2569 declaration</span></span>
-<span><span class="co">#&gt; 1498        Rf_cPsort /usr/share/R/include/R_ext/Callbacks.h 2570 declaration</span></span>
-<span><span class="co">#&gt; 1503   Rf_StringFalse /usr/share/R/include/R_ext/Callbacks.h 2586 declaration</span></span>
-<span><span class="co">#&gt; 1504    Rf_StringTrue /usr/share/R/include/R_ext/Callbacks.h 2587 declaration</span></span>
-<span><span class="co">#&gt; 1505 Rf_isBlankString /usr/share/R/include/R_ext/Callbacks.h 2588 declaration</span></span>
-<span><span class="co">#&gt; 1557        Rf_asChar /usr/share/R/include/R_ext/Callbacks.h 2922 declaration</span></span></code></pre></div>
+<span><span class="co">#&gt; 1597         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2522 declaration</span></span>
+<span><span class="co">#&gt; 1600       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2528 declaration</span></span>
+<span><span class="co">#&gt; 1617       Rf_revsort /usr/share/R/include/R_ext/Callbacks.h 2567 declaration</span></span>
+<span><span class="co">#&gt; 1618        Rf_iPsort /usr/share/R/include/R_ext/Callbacks.h 2568 declaration</span></span>
+<span><span class="co">#&gt; 1619        Rf_rPsort /usr/share/R/include/R_ext/Callbacks.h 2569 declaration</span></span>
+<span><span class="co">#&gt; 1620        Rf_cPsort /usr/share/R/include/R_ext/Callbacks.h 2570 declaration</span></span>
+<span><span class="co">#&gt; 1626   Rf_StringFalse /usr/share/R/include/R_ext/Callbacks.h 2586 declaration</span></span>
+<span><span class="co">#&gt; 1627    Rf_StringTrue /usr/share/R/include/R_ext/Callbacks.h 2587 declaration</span></span>
+<span><span class="co">#&gt; 1628 Rf_isBlankString /usr/share/R/include/R_ext/Callbacks.h 2588 declaration</span></span>
+<span><span class="co">#&gt; 1649        Rf_isNull /usr/share/R/include/R_ext/Callbacks.h 2698 declaration</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="api-examples">API Examples<a class="anchor" aria-label="anchor" href="#api-examples"></a>
@@ -182,13 +182,25 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">txt</span> <span class="op">&lt;-</span> <span class="st">"int foo(int a, const char* s);</span></span>
 <span><span class="st">static inline int bar(void) { return 1; }"</span></span>
+<span><span class="co"># extract params and return type</span></span>
 <span><span class="va">root</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/parse_header_text.html">parse_header_text</a></span><span class="op">(</span><span class="va">txt</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/get_function_nodes.html">get_function_nodes</a></span><span class="op">(</span><span class="va">root</span>, extract_params <span class="op">=</span> <span class="cn">TRUE</span>, extract_return <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   capture_name text start_line start_col       params return_type</span></span>
+<span><span class="co">#&gt; 1    decl_name  foo          1         5 int, con....         int</span></span>
+<span><span class="co">#&gt; 2     def_name  bar          2        19         void         int</span></span>
 <span><span class="fu"><a href="reference/get_function_nodes.html">get_function_nodes</a></span><span class="op">(</span><span class="va">root</span>, extract_params <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   capture_name text start_line start_col       params</span></span>
-<span><span class="co">#&gt; 1    decl_name  foo          1         5 int, con....</span></span>
-<span><span class="co">#&gt; 2     def_name  bar          2        19         void</span></span></code></pre></div>
-<p>Get structs and members:</p>
+<span><span class="co">#&gt;   capture_name text start_line start_col       params return_type</span></span>
+<span><span class="co">#&gt; 1    decl_name  foo          1         5 int, con....        &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2     def_name  bar          2        19         void        &lt;NA&gt;</span></span></code></pre></div>
+<p>Extract function parameter and return types while parsing:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">txt</span> <span class="op">&lt;-</span> <span class="st">"int foo(int a, const char* s);"</span></span>
+<span><span class="va">root</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/parse_header_text.html">parse_header_text</a></span><span class="op">(</span><span class="va">txt</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/get_function_nodes.html">get_function_nodes</a></span><span class="op">(</span><span class="va">root</span>, extract_params <span class="op">=</span> <span class="cn">TRUE</span>, extract_return <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   capture_name text start_line start_col       params return_type</span></span>
+<span><span class="co">#&gt; 1    decl_name  foo          1         5 int, con....         int</span></span></code></pre></div>
+<p>Get structs and members:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">txt</span> <span class="op">&lt;-</span> <span class="st">"struct T { unsigned int x:1; int y; };"</span></span>
 <span><span class="va">root</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/parse_header_text.html">parse_header_text</a></span><span class="op">(</span><span class="va">txt</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/get_struct_nodes.html">get_struct_nodes</a></span><span class="op">(</span><span class="va">root</span><span class="op">)</span></span>
@@ -199,7 +211,7 @@
 <span><span class="co">#&gt; 1           T           x        &lt;NA&gt;        1           &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 2           T           y         int     &lt;NA&gt;           &lt;NA&gt;</span></span></code></pre></div>
 <p>Collect a directory with all kinds using <code>parse_headers_collect</code></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/parse_headers_collect.html">parse_headers_collect</a></span><span class="op">(</span>dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home</a></span><span class="op">(</span><span class="st">"include"</span><span class="op">)</span>, preprocess <span class="op">=</span> <span class="cn">FALSE</span>, extract_params <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "functions"      "structs"        "struct_members" "enums"         </span></span>
@@ -212,13 +224,13 @@
 <span><span class="co">#&gt; 4 /usr/share/R/include/R_ext/Altrep.h    decl_name         54         1</span></span>
 <span><span class="co">#&gt; 5 /usr/share/R/include/R_ext/Altrep.h    decl_name         56         1</span></span>
 <span><span class="co">#&gt; 6 /usr/share/R/include/R_ext/Altrep.h    decl_name         58         1</span></span>
-<span><span class="co">#&gt;         params                    name</span></span>
-<span><span class="co">#&gt; 1 R_altrep....            R_new_altrep</span></span>
-<span><span class="co">#&gt; 2 const ch....  R_make_altstring_class</span></span>
-<span><span class="co">#&gt; 3 const ch.... R_make_altinteger_class</span></span>
-<span><span class="co">#&gt; 4 const ch....    R_make_altreal_class</span></span>
-<span><span class="co">#&gt; 5 const ch.... R_make_altlogical_class</span></span>
-<span><span class="co">#&gt; 6 const ch....     R_make_altraw_class</span></span>
+<span><span class="co">#&gt;         params return_type                    name</span></span>
+<span><span class="co">#&gt; 1 R_altrep....        &lt;NA&gt;            R_new_altrep</span></span>
+<span><span class="co">#&gt; 2 const ch....        &lt;NA&gt;  R_make_altstring_class</span></span>
+<span><span class="co">#&gt; 3 const ch....        &lt;NA&gt; R_make_altinteger_class</span></span>
+<span><span class="co">#&gt; 4 const ch....        &lt;NA&gt;    R_make_altreal_class</span></span>
+<span><span class="co">#&gt; 5 const ch....        &lt;NA&gt; R_make_altlogical_class</span></span>
+<span><span class="co">#&gt; 6 const ch....        &lt;NA&gt;     R_make_altraw_class</span></span>
 <span><span class="co"># Optional: inspect macros from a single header</span></span>
 <span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home</a></span><span class="op">(</span><span class="st">"include"</span><span class="op">)</span>, <span class="st">"Rembedded.h"</span><span class="op">)</span></span>
 <span><span class="va">defs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_defines_from_file.html">get_defines_from_file</a></span><span class="op">(</span><span class="va">path</span>, use_cpp <span class="op">=</span> <span class="cn">TRUE</span>, ccflags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"-I"</span>, <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
