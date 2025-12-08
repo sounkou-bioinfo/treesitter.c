@@ -1,13 +1,14 @@
 
 Package: treesitter.c
 Title: 'R' Bindings to the 'C' Grammar for Tree-Sitter
-Version: 0.0.2
+Version: 0.0.2.9000
 Authors@R: c(
     person(given = "Sounkou Mahamane", family = "Toure", email = "sounkoutoure@gmail.com", role = c("aut", "cre")),
     person("Tree-sitter authors", role = "cph", comment = "Tree-sitter C grammar"))
 Description: Provides bindings to a 'C' grammar for Tree-sitter, to be used
     alongside the 'treesitter' package. Tree-sitter builds concrete syntax trees
-    for source files and can efficiently update them as files are edited.
+    for source files and can efficiently update them or generate code like producing 
+    R C API wrappers from C functions, structs and global definitions from header files.
 License: GPL-3
 Depends: R (>= 4.3.0)
 Imports: treesitter
