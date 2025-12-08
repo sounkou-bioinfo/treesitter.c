@@ -169,8 +169,7 @@ get_struct_members(root)
 #> 2           T           y         int     <NA>           <NA>
 ```
 
-Collect a directory with all kinds using `parse_headers_collect`. This
-can be computationally heavy; use `dontrun{}` for README examples.
+Collect a directory with all kinds using `parse_headers_collect`
 
 ``` r
 res <- parse_headers_collect(dir = R.home("include"), preprocess = FALSE, extract_params = TRUE)
@@ -201,10 +200,10 @@ defs <- get_defines_from_file(path, use_cpp = TRUE, ccflags = paste("-I", dirnam
 #> [5] "__ATOMIC_ACQUIRE"        "__FLT128_MAX_10_EXP__"
 ```
 
-## Details
+## Details On the Used Grammar
 
-**ABI Version 14**, compatible with treesitter package version 0.3.0.
-The C grammar source used for bootstrapping was downloaded from
+treesiter ABI Version 14, compatible with treesitter package version
+0.3.0. The C grammar source used for bootstrapping was downloaded from
 <https://github.com/tree-sitter/tree-sitter-c>. The pre-generated
 `parser.c` from upstream is ~3.7 MB and contains pragma directives that
 trigger CRAN check warnings.

@@ -93,7 +93,7 @@ root <- parse_header_text(txt)
 get_struct_nodes(root)
 get_struct_members(root)
 ```
-Collect a directory with all kinds using `parse_headers_collect`. This can be computationally heavy; use `dontrun{}` for README examples.
+Collect a directory with all kinds using `parse_headers_collect`
 
 ```{r eval=TRUE}
 res <- parse_headers_collect(dir = R.home("include"), preprocess = FALSE, extract_params = TRUE)
@@ -105,9 +105,9 @@ defs <- get_defines_from_file(path, use_cpp = TRUE, ccflags = paste("-I", dirnam
   head(defs)
 ```
 
-## Details
+## Details On the Used Grammar
 
-**ABI Version 14**, compatible with treesitter package version 0.3.0. The C grammar source used for bootstrapping was downloaded from https://github.com/tree-sitter/tree-sitter-c. The pre-generated `parser.c` from upstream is ~3.7 MB and contains pragma directives that trigger CRAN check warnings.
+treesiter ABI Version 14, compatible with treesitter package version 0.3.0. The C grammar source used for bootstrapping was downloaded from https://github.com/tree-sitter/tree-sitter-c. The pre-generated `parser.c` from upstream is ~3.7 MB and contains pragma directives that trigger CRAN check warnings.
 
 During bootstrap (`bootstrap.R`), all `#pragma` directives are automatically removed from `parser.c` to ensure CRAN compliance. This includes pragmas for diagnostic control and optimization settings that are not portable across compilers.
 
