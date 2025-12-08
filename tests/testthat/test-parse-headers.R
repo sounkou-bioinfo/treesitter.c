@@ -193,3 +193,33 @@ test_that("get_defines_from_file uses preprocessor when available", {
     defs_cpp <- get_defines_from_file(path, use_cpp = TRUE)
     expect_true(all(c("FOO", "BAR") %in% defs_cpp))
 })
+
+test_that("parse_headers_collect returns combined results", {
+    tmp <- tempfile("hdr_collect")
+    dir.create(tmp)
+    path <- file.path(tmp, "example.h")
+    writeLines(
+        c("struct T { int a; };", "int foo(int x);", "#define TEST 1"),
+        path
+    )
+    res <- parse_headers_collect(dir = tmp, preprocess = FALSE)
+    expect_true(is.list(res))
+    expect_true("functions" %in% names(res))
+    expect_true("structs" %in% names(res))
+    expect_true(any(grepl("foo", res$functions$name)))
+    expect_true(any(grepl("T", res$structs$text)))
+})
+
+test_that("get_function_nodes extract_params works", {
+    tmp <- tempfile("hdr_fn")
+    dir.create(tmp)
+    path <- file.path(tmp, "fn.h")
+    writeLines(c("int foo(int a, const char* s);"), path)
+    txt <- paste(readLines(path), collapse = "\n")
+    root <- parse_header_text(txt)
+    caps <- get_function_nodes(root, extract_params = TRUE)
+    expect_true(is.data.frame(caps))
+    expect_true("params" %in% colnames(caps))
+    # params is stored as list-column; ensure it contains the two param types
+    expect_true(length(caps$params[[1]]) >= 2)
+})

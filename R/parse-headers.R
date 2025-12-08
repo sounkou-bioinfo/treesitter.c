@@ -368,9 +368,10 @@ captures_to_df <- function(captures) {
 #' Returns a data frame with `capture_name`, `text`, `start_line`,
 #' and `start_col`.
 #' @param root A tree-sitter root node.
-#' @return Data frame with function captures.
+#' @param extract_params Logical; whether to extract parameter types for found functions. Default FALSE.
+#' @return Data frame with function captures; when `extract_params=TRUE` a `params` list-column is present.
 #' @export
-get_function_nodes <- function(root) {
+get_function_nodes <- function(root, extract_params = FALSE) {
     nodes <- find_nodes_by_type(root, c("function_definition", "declaration"))
     out <- list()
     for (n in nodes) {
@@ -417,12 +418,59 @@ get_function_nodes <- function(root) {
                 } else {
                     scol <- NA_integer_
                 }
-                out[[length(out) + 1L]] <- list(
+                entry <- list(
                     capture_name = cname,
                     text = text,
                     start_line = sl,
                     start_col = scol
                 )
+                if (isTRUE(extract_params)) {
+                    # find parameter_declaration nodes within fd (function_declarator)
+                    # use declared function_declarator (fd) to find parameter_declaration
+                    pnodes <- find_descendants_by_type(fd, c("parameter_declaration"))
+                    # Extract types from parameter_declaration nodes by searching descendant type nodes
+                    params <- c()
+                    if (length(pnodes) > 0) {
+                        # Use node structure rather than regex: collect node_text from children
+                        # while skipping identifier/field_identifier nodes.
+                        get_param_type <- function(node) {
+                            # Recursive traversal that excludes identifier nodes
+                            rec <- function(nd) {
+                                if (is.null(nd)) {
+                                    return(character(0))
+                                }
+                                t <- treesitter::node_type(nd)
+                                if (t %in% c("identifier", "field_identifier")) {
+                                    return(character(0))
+                                }
+                                # If leaf, return node text
+                                if (treesitter::node_child_count(nd) == 0) {
+                                    return(treesitter::node_text(nd))
+                                }
+                                out <- character(0)
+                                nc <- treesitter::node_child_count(nd)
+                                if (nc > 0) {
+                                    for (i in seq_len(nc)) {
+                                        ch <- treesitter::node_child(nd, i)
+                                        v <- rec(ch)
+                                        if (length(v) > 0 && nzchar(v)) out <- c(out, v)
+                                    }
+                                }
+                                if (length(out) == 0) {
+                                    return(character(0))
+                                }
+                                paste(out, collapse = " ")
+                            }
+                            trimws(rec(node))
+                        }
+                        for (pn in pnodes) {
+                            ptype <- get_param_type(pn)
+                            params <- c(params, if (nzchar(ptype)) ptype else NA_character_)
+                        }
+                    }
+                    entry$params <- if (length(params) > 0) params else character(0)
+                }
+                out[[length(out) + 1L]] <- entry
             }
         }
     }
@@ -432,17 +480,22 @@ get_function_nodes <- function(root) {
             text = character(0),
             start_line = integer(0),
             start_col = integer(0),
+            params = I(list()),
             stringsAsFactors = FALSE
         ))
     }
+    # Include params list-column if present
     df <- do.call(
         rbind,
         lapply(out, function(x) {
+            params_col <- I(list(character(0)))
+            if (!is.null(x$params)) params_col <- I(list(x$params))
             data.frame(
                 capture_name = x$capture_name,
                 text = x$text,
                 start_line = x$start_line,
                 start_col = x$start_col,
+                params = params_col,
                 stringsAsFactors = FALSE
             )
         })
@@ -995,4 +1048,110 @@ parse_r_include_headers <- function(
     res <- unique(res)
     rownames(res) <- NULL
     res
+}
+
+
+#+ Convenience: parse headers directory and return many kinds of results
+#+
+#' Parse a directory of headers and return named list of data.frames with
+#' functions, structs, struct members, enums, unions, globals, and macros.
+#'
+#' This helper loops over headers found in a directory and returns a list
+#' with tidy data.frames. Useful for programmatic analysis of header
+#' collections.
+#'
+#' @param dir Directory to search for header files. Defaults to `R.home("include")`.
+#' @param recursive Whether to search recursively for headers. Default `TRUE`.
+#' @param pattern File name pattern to match header files. Default is `\.h$` and `\.H$`.
+#' @param preprocess Run the C preprocessor (using R's configured CC) on header files before parsing. Defaults to `FALSE`.
+#' @param cc The C compiler to use for preprocessing. If `NULL` the function queries `R CMD config CC` and falls back to `Sys.getenv("CC")` and the `cc` on PATH.
+#' @param ccflags Extra flags to pass to the compiler when preprocessing. If `NULL` flags are taken from `R CMD config CFLAGS` and `R CMD config CPPFLAGS`.
+#' @param include_dirs Additional directories to add to the include path for preprocessing. A character vector of directories.
+#' @param extract_params Logical; whether to extract parameter types for functions. Default `FALSE`.
+#' @return A named list of data frames with components: `functions`, `structs`, `struct_members`, `enums`, `unions`, `globals`, `defines`.
+#' @examples
+#' if (requireNamespace("treesitter", quietly = TRUE)) {
+#'     res <- parse_headers_collect(dir = R.home("include"), preprocess = FALSE)
+#'     head(res$functions)
+#' }
+#' @export
+parse_headers_collect <- function(
+  dir = R.home("include"),
+  recursive = TRUE,
+  pattern = c("\\.h$", "\\.H$"),
+  preprocess = FALSE,
+  cc = r_cc(),
+  ccflags = r_ccflags(),
+  include_dirs = NULL,
+  extract_params = FALSE
+) {
+    if (!requireNamespace("treesitter", quietly = TRUE)) stop("treesitter required")
+    if (!dir.exists(dir)) stop("Directory does not exist: ", dir)
+    files <- list.files(dir, pattern = paste0("(", paste(pattern, collapse = "|"), ")"), full.names = TRUE, recursive = recursive)
+    if (length(files) == 0L) {
+        out <- list(
+            functions = data.frame(name = character(0), file = character(0), line = integer(0), kind = character(0), params = I(list())),
+            structs = data.frame(capture_name = character(0), text = character(0), start_line = integer(0)),
+            struct_members = data.frame(struct_name = character(0), member_name = character(0), member_type = character(0), bitfield = character(0), nested_members = character(0)),
+            enums = data.frame(capture_name = character(0), text = character(0), start_line = integer(0)),
+            unions = data.frame(capture_name = character(0), text = character(0), start_line = integer(0)),
+            globals = data.frame(capture_name = character(0), text = character(0), start_line = integer(0)),
+            defines = character(0)
+        )
+        return(out)
+    }
+    agg <- list(functions = list(), structs = list(), struct_members = list(), enums = list(), unions = list(), globals = list(), defines = character(0))
+    for (f in files) {
+        content <- if (preprocess) {
+            extra <- c(paste0("-I", dirname(f)))
+            if (!is.null(include_dirs)) extra <- c(extra, paste0("-I", include_dirs))
+            preprocess_header(f, cc = cc, ccflags = paste(ccflags, paste(extra, collapse = " ")))
+        } else {
+            paste(readLines(f, warn = FALSE), collapse = "\n")
+        }
+        root <- tryCatch(parse_header_text(content), error = function(e) NULL)
+        if (is.null(root)) next
+        funcs <- tryCatch(get_function_nodes(root, extract_params = extract_params), error = function(e) NULL)
+        if (!is.null(funcs) && nrow(funcs) > 0) {
+            func_df <- data.frame(file = f, funcs, stringsAsFactors = FALSE)
+            # Rename 'text' column from get_function_nodes to 'name' for convenience
+            if ("text" %in% colnames(func_df)) {
+                func_df$name <- func_df$text
+                func_df$text <- NULL
+            }
+            agg$functions[[length(agg$functions) + 1]] <- func_df
+        }
+        structs <- tryCatch(get_struct_nodes(root), error = function(e) NULL)
+        if (!is.null(structs) && nrow(structs) > 0) {
+            agg$structs[[length(agg$structs) + 1]] <- cbind(file = f, structs)
+        }
+        members <- tryCatch(get_struct_members(root), error = function(e) NULL)
+        if (!is.null(members) && nrow(members) > 0) {
+            agg$struct_members[[length(agg$struct_members) + 1]] <- cbind(file = f, members)
+        }
+        enums <- tryCatch(get_enum_nodes(root), error = function(e) NULL)
+        if (!is.null(enums) && nrow(enums) > 0) {
+            agg$enums[[length(agg$enums) + 1]] <- cbind(file = f, enums)
+        }
+        unions <- tryCatch(get_union_nodes(root), error = function(e) NULL)
+        if (!is.null(unions) && nrow(unions) > 0) {
+            agg$unions[[length(agg$unions) + 1]] <- cbind(file = f, unions)
+        }
+        globals <- tryCatch(get_globals_from_root(root), error = function(e) NULL)
+        if (!is.null(globals) && nrow(globals) > 0) {
+            agg$globals[[length(agg$globals) + 1]] <- cbind(file = f, globals)
+        }
+        defs <- tryCatch(get_defines_from_file(f, use_cpp = preprocess, cc = cc, ccflags = ccflags), error = function(e) character(0))
+        if (length(defs) > 0) agg$defines <- unique(c(agg$defines, defs))
+    }
+    out_list <- list(
+        functions = if (length(agg$functions) > 0) do.call(rbind, agg$functions) else data.frame(name = character(0), file = character(0), line = integer(0), kind = character(0), params = I(list())),
+        structs = if (length(agg$structs) > 0) do.call(rbind, agg$structs) else data.frame(capture_name = character(0), text = character(0), start_line = integer(0)),
+        struct_members = if (length(agg$struct_members) > 0) do.call(rbind, agg$struct_members) else data.frame(struct_name = character(0), member_name = character(0), member_type = character(0), bitfield = character(0), nested_members = character(0)),
+        enums = if (length(agg$enums) > 0) do.call(rbind, agg$enums) else data.frame(capture_name = character(0), text = character(0), start_line = integer(0)),
+        unions = if (length(agg$unions) > 0) do.call(rbind, agg$unions) else data.frame(capture_name = character(0), text = character(0), start_line = integer(0)),
+        globals = if (length(agg$globals) > 0) do.call(rbind, agg$globals) else data.frame(capture_name = character(0), text = character(0), start_line = integer(0)),
+        defines = agg$defines
+    )
+    out_list
 }

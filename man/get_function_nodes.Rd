@@ -4,13 +4,15 @@
 \alias{get_function_nodes}
 \title{Extract function names (declarations and definitions) from a root}
 \usage{
-get_function_nodes(root)
+get_function_nodes(root, extract_params = FALSE)
 }
 \arguments{
 \item{root}{A tree-sitter root node.}
+
+\item{extract_params}{Logical; whether to extract parameter types for found functions. Default FALSE.}
 }
 \value{
-Data frame with function captures.
+Data frame with function captures; when \code{extract_params=TRUE} a \code{params} list-column is present.
 }
 \description{
 Returns a data frame with \code{capture_name}, \code{text}, \code{start_line},
