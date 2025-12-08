@@ -374,7 +374,7 @@ captures_to_df <- function(captures) {
 #' @param extract_params Logical; whether to extract parameter types for found functions. Default FALSE.
 #' @return Data frame with function captures; when `extract_params=TRUE` a `params` list-column is present.
 #' @export
-get_function_nodes <- function(root, extract_params = FALSE) {
+get_function_nodes <- function(root, extract_params = FALSE, extract_return = FALSE) {
     nodes <- find_nodes_by_type(root, c("function_definition", "declaration"))
     out <- list()
     for (n in nodes) {
@@ -473,6 +473,40 @@ get_function_nodes <- function(root, extract_params = FALSE) {
                     }
                     entry$params <- if (length(params) > 0) params else character(0)
                 }
+                if (isTRUE(extract_return)) {
+                    # attempt to find the return type: prefer direct children (primitive_type or type_identifier)
+                    get_return_type <- function(node) {
+                        nc <- treesitter::node_child_count(node)
+                        for (ci in seq_len(nc)) {
+                            ch <- treesitter::node_child(node, ci)
+                            if (treesitter::node_type(ch) %in% c("primitive_type", "type_identifier")) {
+                                return(treesitter::node_text(ch))
+                            }
+                        }
+                        # fallback: find descendant types that are not inside the function_declarator
+                        candidates <- find_descendants_by_type(node, c("primitive_type", "type_identifier"))
+                        if (length(candidates) == 0) {
+                            return(NA_character_)
+                        }
+                        for (cand in candidates) {
+                            # walk up parents to see if any parent is a function_declarator - skip those
+                            parent <- treesitter::node_parent(cand)
+                            inside_fd <- FALSE
+                            while (!is.null(parent) && !identical(parent, node)) {
+                                if (treesitter::node_type(parent) == "function_declarator") {
+                                    inside_fd <- TRUE
+                                    break
+                                }
+                                parent <- treesitter::node_parent(parent)
+                            }
+                            if (!inside_fd) {
+                                return(treesitter::node_text(cand))
+                            }
+                        }
+                        NA_character_
+                    }
+                    entry$return_type <- get_return_type(n)
+                }
                 out[[length(out) + 1L]] <- entry
             }
         }
@@ -499,6 +533,7 @@ get_function_nodes <- function(root, extract_params = FALSE) {
                 start_line = x$start_line,
                 start_col = x$start_col,
                 params = params_col,
+                return_type = if (!is.null(x$return_type)) x$return_type else NA_character_,
                 stringsAsFactors = FALSE
             )
         })
@@ -1089,7 +1124,8 @@ parse_headers_collect <- function(
   cc = r_cc(),
   ccflags = NULL,
   include_dirs = NULL,
-  extract_params = FALSE
+  extract_params = FALSE,
+  extract_return = FALSE
 ) {
     if (!requireNamespace("treesitter", quietly = TRUE)) stop("treesitter required")
     if (!dir.exists(dir)) stop("Directory does not exist: ", dir)
@@ -1118,7 +1154,7 @@ parse_headers_collect <- function(
         }
         root <- tryCatch(parse_header_text(content), error = function(e) NULL)
         if (is.null(root)) next
-        funcs <- tryCatch(get_function_nodes(root, extract_params = extract_params), error = function(e) NULL)
+        funcs <- tryCatch(get_function_nodes(root, extract_params = extract_params, extract_return = extract_return), error = function(e) NULL)
         if (!is.null(funcs) && nrow(funcs) > 0) {
             func_df <- data.frame(file = f, funcs, stringsAsFactors = FALSE)
             # Rename 'text' column from get_function_nodes to 'name' for convenience

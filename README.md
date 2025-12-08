@@ -148,11 +148,16 @@ extract functions with parameter types.
 ``` r
 txt <- "int foo(int a, const char* s);
 static inline int bar(void) { return 1; }"
+# extract params and return type
 root <- parse_header_text(txt)
+get_function_nodes(root, extract_params = TRUE, extract_return = TRUE)
+#>   capture_name text start_line start_col       params return_type
+#> 1    decl_name  foo          1         5 int, con....         int
+#> 2     def_name  bar          2        19         void         int
 get_function_nodes(root, extract_params = TRUE)
-#>   capture_name text start_line start_col       params
-#> 1    decl_name  foo          1         5 int, con....
-#> 2     def_name  bar          2        19         void
+#>   capture_name text start_line start_col       params return_type
+#> 1    decl_name  foo          1         5 int, con....        <NA>
+#> 2     def_name  bar          2        19         void        <NA>
 ```
 
 Get structs and members:
@@ -184,13 +189,13 @@ head(res$functions)
 #> 4 /usr/share/R/include/R_ext/Altrep.h    decl_name         54         1
 #> 5 /usr/share/R/include/R_ext/Altrep.h    decl_name         56         1
 #> 6 /usr/share/R/include/R_ext/Altrep.h    decl_name         58         1
-#>         params                    name
-#> 1 R_altrep....            R_new_altrep
-#> 2 const ch....  R_make_altstring_class
-#> 3 const ch.... R_make_altinteger_class
-#> 4 const ch....    R_make_altreal_class
-#> 5 const ch.... R_make_altlogical_class
-#> 6 const ch....     R_make_altraw_class
+#>         params return_type                    name
+#> 1 R_altrep....        <NA>            R_new_altrep
+#> 2 const ch....        <NA>  R_make_altstring_class
+#> 3 const ch....        <NA> R_make_altinteger_class
+#> 4 const ch....        <NA>    R_make_altreal_class
+#> 5 const ch....        <NA> R_make_altlogical_class
+#> 6 const ch....        <NA>     R_make_altraw_class
 # Optional: inspect macros from a single header
 path <- file.path(R.home("include"), "Rembedded.h")
 defs <- get_defines_from_file(path, use_cpp = TRUE, ccflags = paste("-I", dirname(path)))

@@ -80,7 +80,9 @@ Simple parse and extract functions: parse a small header string and extract func
 ```{r eval=TRUE}
 txt <- "int foo(int a, const char* s);
 static inline int bar(void) { return 1; }"
+# extract params and return type
 root <- parse_header_text(txt)
+get_function_nodes(root, extract_params = TRUE, extract_return = TRUE)
 get_function_nodes(root, extract_params = TRUE)
 
 ```

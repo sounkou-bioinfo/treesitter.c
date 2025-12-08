@@ -217,9 +217,26 @@ test_that("get_function_nodes extract_params works", {
     writeLines(c("int foo(int a, const char* s);"), path)
     txt <- paste(readLines(path), collapse = "\n")
     root <- parse_header_text(txt)
-    caps <- get_function_nodes(root, extract_params = TRUE)
+    caps <- get_function_nodes(root, extract_params = TRUE, extract_return = TRUE)
     expect_true(is.data.frame(caps))
     expect_true("params" %in% colnames(caps))
     # params is stored as list-column; ensure it contains the two param types
     expect_true(length(caps$params[[1]]) >= 2)
+    expect_true("return_type" %in% colnames(caps))
+    expect_true(grepl("int", caps$return_type[1]))
+})
+
+test_that("get_function_nodes extract_return works", {
+    tmp <- tempfile("hdr_fn_ret")
+    dir.create(tmp)
+    path <- file.path(tmp, "fnret.h")
+    writeLines(c("int foo(int a, const char* s);", "static inline void bar(void) { return; }"), path)
+    txt <- paste(readLines(path), collapse = "\n")
+    root <- parse_header_text(txt)
+    caps <- get_function_nodes(root, extract_return = TRUE)
+    expect_true(is.data.frame(caps))
+    expect_true("return_type" %in% colnames(caps))
+    # both functions should have a return type: 'int' and 'void'
+    expect_true(any(grepl("int", caps$return_type, ignore.case = TRUE)))
+    expect_true(any(grepl("void", caps$return_type, ignore.case = TRUE)))
 })

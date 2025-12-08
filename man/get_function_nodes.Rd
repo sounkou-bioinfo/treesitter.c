@@ -4,7 +4,7 @@
 \alias{get_function_nodes}
 \title{Extract function names (declarations and definitions) from a root}
 \usage{
-get_function_nodes(root, extract_params = FALSE)
+get_function_nodes(root, extract_params = FALSE, extract_return = FALSE)
 }
 \arguments{
 \item{root}{A tree-sitter root node.}
