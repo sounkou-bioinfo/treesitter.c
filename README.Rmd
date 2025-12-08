@@ -85,7 +85,18 @@ root <- parse_header_text(txt)
 get_function_nodes(root, extract_params = TRUE, extract_return = TRUE)
 get_function_nodes(root, extract_params = TRUE)
 
+
 ```
+
+
+Extract function parameter and return types while parsing:
+
+```{r eval=TRUE}
+txt <- "int foo(int a, const char* s);"
+root <- parse_header_text(txt)
+get_function_nodes(root, extract_params = TRUE, extract_return = TRUE)
+```
+
 
 Get structs and members:
 

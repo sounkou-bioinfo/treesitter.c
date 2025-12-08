@@ -210,6 +210,22 @@ test_that("parse_headers_collect returns combined results", {
     expect_true(any(grepl("T", res$structs$text)))
 })
 
+test_that("parse_headers_collect extract_return propagates", {
+    tmp <- tempfile("hdr_collect_ret")
+    dir.create(tmp)
+    path <- file.path(tmp, "example.h")
+    writeLines(
+        c("struct T { int a; };", "int foo(int x);", "static inline void bar(void) { return; }"),
+        path
+    )
+    res <- parse_headers_collect(dir = tmp, preprocess = FALSE, extract_return = TRUE)
+    expect_true(is.list(res))
+    expect_true("functions" %in% names(res))
+    expect_true("return_type" %in% colnames(res$functions))
+    expect_true(any(grepl("int", res$functions$return_type, ignore.case = TRUE)))
+    expect_true(any(grepl("void", res$functions$return_type, ignore.case = TRUE)))
+})
+
 test_that("get_function_nodes extract_params works", {
     tmp <- tempfile("hdr_fn")
     dir.create(tmp)

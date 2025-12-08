@@ -376,6 +376,21 @@ captures_to_df <- function(captures) {
 #' @export
 get_function_nodes <- function(root, extract_params = FALSE, extract_return = FALSE) {
     nodes <- find_nodes_by_type(root, c("function_definition", "declaration"))
+    # fallback: if no declarations or function_def found, try to find function_declarator nodes
+    if (length(nodes) == 0) {
+        fds <- find_nodes_by_type(root, c("function_declarator"))
+        if (length(fds) > 0) {
+            nodes <- list()
+            for (fd in fds) {
+                # climb parents until we find a declaration or function_definition or top
+                par <- treesitter::node_parent(fd)
+                while (!is.null(par) && !(treesitter::node_type(par) %in% c("function_definition", "declaration"))) {
+                    par <- treesitter::node_parent(par)
+                }
+                if (!is.null(par)) nodes[[length(nodes) + 1]] <- par
+            }
+        }
+    }
     out <- list()
     for (n in nodes) {
         # find function_declarator -> identifier
@@ -1041,7 +1056,46 @@ parse_r_include_headers <- function(
             paste(readLines(f, warn = FALSE), collapse = "\n")
         }
         root <- parse_header_text(content)
-        funcs <- tryCatch(get_function_nodes(root), error = function(e) NULL)
+        funcs <- tryCatch(get_function_nodes(root, extract_params = extract_params, extract_return = extract_return), error = function(e) NULL)
+        # fallback: if we didn't find function nodes, try scanning for function_declarator identifiers
+        if (is.null(funcs) || (is.data.frame(funcs) && nrow(funcs) == 0)) {
+            fds <- find_nodes_by_type(root, c("function_declarator"))
+            if (length(fds) > 0) {
+                fb <- list()
+                for (fd in fds) {
+                    ids <- find_descendants_by_type(fd, c("identifier", "field_identifier"))
+                    if (length(ids) >= 1) {
+                        idn <- ids[[1]]
+                        name <- treesitter::node_text(idn)
+                        sp <- treesitter::node_start_point(idn)
+                        sl <- NA_integer_
+                        if (!is.null(sp)) {
+                            if (is.numeric(sp) && length(sp) >= 2) sl <- as.integer(sp[1] + 1L) else if (is.list(sp) && ("row" %in% names(sp))) sl <- as.integer(sp$row + 1L)
+                        }
+                        # determine kind by finding nearest parent of type function_definition or declaration
+                        par <- treesitter::node_parent(fd)
+                        k <- "unknown"
+                        while (!is.null(par)) {
+                            t <- treesitter::node_type(par)
+                            if (t == "function_definition") {
+                                k <- "definition"
+                                break
+                            }
+                            if (t == "declaration") {
+                                k <- "declaration"
+                                break
+                            }
+                            par <- treesitter::node_parent(par)
+                        }
+                        fb[[length(fb) + 1L]] <- list(name = name, file = f, line = sl, kind = k)
+                    }
+                }
+                if (length(fb) > 0) {
+                    for (it in fb) out[[length(out) + 1L]] <- it
+                    next
+                }
+            }
+        }
         if (!is.null(funcs) && is.data.frame(funcs) && nrow(funcs) > 0) {
             for (i in seq_len(nrow(funcs))) {
                 cn <- funcs$capture_name[i]

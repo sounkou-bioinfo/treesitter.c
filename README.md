@@ -87,28 +87,28 @@ Show the first few discovered functions matching “Rf”:
 
 ``` r
 hdr_df[grepl("Rf", x = hdr_df$name), ] |> head(10)
-#>                             name                                        file
-#> 25  Rf_removeTaskCallbackByIndex      /usr/share/R/include/R_ext/Callbacks.h
-#> 26   Rf_removeTaskCallbackByName      /usr/share/R/include/R_ext/Callbacks.h
-#> 57                     Rf_onintr /usr/share/R/include/R_ext/GraphicsDevice.h
-#> 59                  Rf_ucstoutf8 /usr/share/R/include/R_ext/GraphicsDevice.h
-#> 236                  S_Rf_divset  /usr/share/R/include/R_ext/stats_package.h
-#> 242                  S_Rf_divset    /usr/share/R/include/R_ext/stats_stubs.h
-#> 273             Rf_initEmbeddedR            /usr/share/R/include/Rembedded.h
-#> 274              Rf_endEmbeddedR            /usr/share/R/include/Rembedded.h
-#> 275              Rf_initialize_R            /usr/share/R/include/Rembedded.h
-#> 282            Rf_KillAllDevices            /usr/share/R/include/Rembedded.h
-#>     line        kind
-#> 25    66 declaration
-#> 26    67 declaration
-#> 57   979 declaration
-#> 59   990 declaration
-#> 236   56 declaration
-#> 242   41  definition
-#> 273   32 declaration
-#> 274   33 declaration
-#> 275   42 declaration
-#> 282   50 declaration
+#>                              name                                        file
+#> 109  Rf_removeTaskCallbackByIndex      /usr/share/R/include/R_ext/Callbacks.h
+#> 110   Rf_removeTaskCallbackByName      /usr/share/R/include/R_ext/Callbacks.h
+#> 112            Rf_addTaskCallback      /usr/share/R/include/R_ext/Callbacks.h
+#> 134                      Rf_error          /usr/share/R/include/R_ext/Error.h
+#> 137                      Rf_error          /usr/share/R/include/R_ext/Error.h
+#> 140                    Rf_warning          /usr/share/R/include/R_ext/Error.h
+#> 251                     Rf_onintr /usr/share/R/include/R_ext/GraphicsDevice.h
+#> 256                  Rf_ucstoutf8 /usr/share/R/include/R_ext/GraphicsDevice.h
+#> 1031                  S_Rf_divset  /usr/share/R/include/R_ext/stats_package.h
+#> 1037                  S_Rf_divset    /usr/share/R/include/R_ext/stats_stubs.h
+#>      line        kind
+#> 109    66 declaration
+#> 110    67 declaration
+#> 112    69 declaration
+#> 134    58 declaration
+#> 137    63     unknown
+#> 140    69     unknown
+#> 251   979 declaration
+#> 256   990 declaration
+#> 1031   56 declaration
+#> 1037   41  definition
 ```
 
 If you have a C compiler available and want to preprocess macros
@@ -125,16 +125,16 @@ hdr_df_pp <- parse_r_include_headers(
   )
 hdr_df_pp[grepl("Rf", x = hdr_df_pp$name), ] |> head(10)
 #>                  name                                   file line        kind
-#> 1483         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2522 declaration
-#> 1486       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2528 declaration
-#> 1495       Rf_revsort /usr/share/R/include/R_ext/Callbacks.h 2567 declaration
-#> 1496        Rf_iPsort /usr/share/R/include/R_ext/Callbacks.h 2568 declaration
-#> 1497        Rf_rPsort /usr/share/R/include/R_ext/Callbacks.h 2569 declaration
-#> 1498        Rf_cPsort /usr/share/R/include/R_ext/Callbacks.h 2570 declaration
-#> 1503   Rf_StringFalse /usr/share/R/include/R_ext/Callbacks.h 2586 declaration
-#> 1504    Rf_StringTrue /usr/share/R/include/R_ext/Callbacks.h 2587 declaration
-#> 1505 Rf_isBlankString /usr/share/R/include/R_ext/Callbacks.h 2588 declaration
-#> 1557        Rf_asChar /usr/share/R/include/R_ext/Callbacks.h 2922 declaration
+#> 1597         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2522 declaration
+#> 1600       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2528 declaration
+#> 1617       Rf_revsort /usr/share/R/include/R_ext/Callbacks.h 2567 declaration
+#> 1618        Rf_iPsort /usr/share/R/include/R_ext/Callbacks.h 2568 declaration
+#> 1619        Rf_rPsort /usr/share/R/include/R_ext/Callbacks.h 2569 declaration
+#> 1620        Rf_cPsort /usr/share/R/include/R_ext/Callbacks.h 2570 declaration
+#> 1626   Rf_StringFalse /usr/share/R/include/R_ext/Callbacks.h 2586 declaration
+#> 1627    Rf_StringTrue /usr/share/R/include/R_ext/Callbacks.h 2587 declaration
+#> 1628 Rf_isBlankString /usr/share/R/include/R_ext/Callbacks.h 2588 declaration
+#> 1649        Rf_isNull /usr/share/R/include/R_ext/Callbacks.h 2698 declaration
 ```
 
 ## API Examples
@@ -158,6 +158,16 @@ get_function_nodes(root, extract_params = TRUE)
 #>   capture_name text start_line start_col       params return_type
 #> 1    decl_name  foo          1         5 int, con....        <NA>
 #> 2     def_name  bar          2        19         void        <NA>
+```
+
+Extract function parameter and return types while parsing:
+
+``` r
+txt <- "int foo(int a, const char* s);"
+root <- parse_header_text(txt)
+get_function_nodes(root, extract_params = TRUE, extract_return = TRUE)
+#>   capture_name text start_line start_col       params return_type
+#> 1    decl_name  foo          1         5 int, con....         int
 ```
 
 Get structs and members:
