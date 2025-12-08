@@ -6,7 +6,7 @@
 \alias{treesitter.c-package}
 \title{treesitter.c: 'R' Bindings to the 'C' Grammar for Tree-Sitter}
 \description{
-Provides bindings to a 'C' grammar for Tree-sitter, to be used alongside the 'treesitter' package. Tree-sitter builds concrete syntax trees for source files and can efficiently update them as files are edited.
+Provides bindings to a 'C' grammar for Tree-sitter, to be used alongside the 'treesitter' package. Tree-sitter builds concrete syntax trees for source files and can efficiently update them or generate code like producing R C API wrappers from C functions, structs and global definitions from header files.
 }
 \seealso{
 Useful links:

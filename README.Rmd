@@ -40,6 +40,28 @@ tree <- parser_parse(parser, code)
 tree
 ```
 
+## Parsing R headers (example)
+
+```{r eval=TRUE}
+if (requireNamespace("treesitter", quietly = TRUE)) {
+  # Parse R headers installed on this machine
+  hdr_df <- parse_r_include_headers(dir = R.home("include"), preprocess = FALSE)
+  # Show the first few functions discovered
+  hdr_df[1:10, ]
+
+  # If you have a C compiler available and want to preprocess macros
+  # (recommended for headers that use macros for types), enable preprocess = TRUE.
+  # Prefer to use the helper `r_cc()` defined in the package which consults R's
+  # configuration and environment. This ensures consistent behavior across
+  # platforms and environments.
+  cc <- treesitter.c::r_cc()
+  if (nzchar(cc)) {
+    hdr_df_pp <- parse_r_include_headers(dir = R.home("include"), preprocess = TRUE)
+    hdr_df_pp[1:10, ]
+  }
+}
+```
+
 ## Details
 
 **ABI Version 14**, compatible with treesitter package version 0.3.0. The C grammar source used for bootstrapping was downloaded from https://github.com/tree-sitter/tree-sitter-c. The pre-generated `parser.c` from upstream is ~3.7 MB and contains pragma directives that trigger CRAN check warnings.

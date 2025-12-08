@@ -10,7 +10,7 @@
 #' language()
 language <- function() {
   pointer <- .Call(ffi_language)
-  
+
   new_language(
     pointer = pointer,
     abi = abi(),
