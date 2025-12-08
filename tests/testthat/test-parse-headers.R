@@ -55,6 +55,20 @@ test_that("preprocessing uses R CMD config CC when requested", {
     expect_true(nrow(res) >= 1)
 })
 
+test_that("parse_r_include_headers include_dirs preserves declarations (Rf names)", {
+    rcc <- treesitter.c::r_cc()
+    if (!nzchar(rcc)) skip("No C compiler; skipping preprocess include_dirs test")
+    rcc_prog <- strsplit(rcc, "\\s+")[[1]][1]
+    if (!nzchar(Sys.which(rcc_prog))) skip("C compiler not on PATH; skipping test")
+
+    # Parse a system header with and without include_dirs; ensure preprocessed parse
+    # includes expected Rf names when include_dirs are set.
+    hdr_dir <- R.home("include")
+    res_yes <- parse_r_include_headers(dir = hdr_dir, recursive = FALSE, preprocess = TRUE, include_dirs = hdr_dir)
+    # Now we expect to find Rf_ names in the preprocessed results
+    expect_true(any(grepl("Rf_initialize_R", res_yes$name) | grepl("Rf_initEmbeddedR", res_yes$name)))
+})
+
 test_that("preprocess_header returns preprocessed text", {
     rcc <- treesitter.c::r_cc()
     if (!nzchar(rcc)) {

@@ -56,7 +56,9 @@ hdr_df[
 # configuration and environment. This ensures consistent behavior across
 # platforms and environments.
 cc <- treesitter.c::r_cc()
-hdr_df_pp <- parse_r_include_headers(dir = R.home("include"), preprocess = TRUE)
+# When preprocessing system headers, pass the include path via `include_dirs` so
+# the preprocessor can find nested headers and macros correctly.
+hdr_df_pp <- parse_r_include_headers(dir = R.home("include"), preprocess = TRUE, include_dirs = R.home("include"))
 hdr_df_pp[
   grepl("Rf", x = hdr_df_pp$name),] |>
       head(10)

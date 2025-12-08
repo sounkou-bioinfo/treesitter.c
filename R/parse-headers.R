@@ -886,6 +886,7 @@ get_defines_from_file <- function(
 #'   and the `cc` on PATH.
 #' @param ccflags Extra flags to pass to the compiler when preprocessing.
 #'   If `NULL` flags are taken from `R CMD config CFLAGS` and `R CMD config CPPFLAGS`.
+#' @param include_dirs Additional directories to add to the include path for preprocessing. A character vector of directories.
 #' @return A data frame with columns `name`, `file`, `line`, and `kind`
 #'   (either 'declaration' or 'definition').
 #' @examples
@@ -906,7 +907,8 @@ parse_r_include_headers <- function(
   pattern = c("\\.h$", "\\.H$"),
   preprocess = FALSE,
   cc = r_cc(),
-  ccflags = r_ccflags()
+  ccflags = r_ccflags(),
+  include_dirs = NULL
 ) {
     if (!requireNamespace("treesitter", quietly = TRUE)) {
         stop(
@@ -934,7 +936,15 @@ parse_r_include_headers <- function(
     out <- list()
     for (f in files) {
         content <- if (preprocess) {
-            preprocess_header(f, cc = cc, ccflags = ccflags)
+            # Add include dirs: ensure the header dir itself is in ccflags and append any
+            # user-provided include_dirs.
+            extra <- character(0)
+            # always add the directory of the file being preprocessed
+            extra <- c(extra, paste0("-I", dirname(f)))
+            if (!is.null(include_dirs)) {
+                extra <- c(extra, paste0("-I", include_dirs))
+            }
+            preprocess_header(f, cc = cc, ccflags = paste(ccflags, paste(extra, collapse = " ")))
         } else {
             paste(readLines(f, warn = FALSE), collapse = "\n")
         }

@@ -109,12 +109,23 @@ hdr_df[
 # configuration and environment. This ensures consistent behavior across
 # platforms and environments.
 cc <- treesitter.c::r_cc()
-hdr_df_pp <- parse_r_include_headers(dir = R.home("include"), preprocess = TRUE)
+# When preprocessing system headers, pass the include path via `include_dirs` so
+# the preprocessor can find nested headers and macros correctly.
+hdr_df_pp <- parse_r_include_headers(dir = R.home("include"), preprocess = TRUE, include_dirs = R.home("include"))
 hdr_df_pp[
   grepl("Rf", x = hdr_df_pp$name),] |>
       head(10)
-#> [1] name file line kind
-#> <0 rows> (or 0-length row.names)
+#>                  name                                   file line        kind
+#> 1483         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2522 declaration
+#> 1486       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2528 declaration
+#> 1495       Rf_revsort /usr/share/R/include/R_ext/Callbacks.h 2567 declaration
+#> 1496        Rf_iPsort /usr/share/R/include/R_ext/Callbacks.h 2568 declaration
+#> 1497        Rf_rPsort /usr/share/R/include/R_ext/Callbacks.h 2569 declaration
+#> 1498        Rf_cPsort /usr/share/R/include/R_ext/Callbacks.h 2570 declaration
+#> 1503   Rf_StringFalse /usr/share/R/include/R_ext/Callbacks.h 2586 declaration
+#> 1504    Rf_StringTrue /usr/share/R/include/R_ext/Callbacks.h 2587 declaration
+#> 1505 Rf_isBlankString /usr/share/R/include/R_ext/Callbacks.h 2588 declaration
+#> 1557        Rf_asChar /usr/share/R/include/R_ext/Callbacks.h 2922 declaration
 ```
 
 ## Details

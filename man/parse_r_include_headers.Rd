@@ -10,7 +10,8 @@ parse_r_include_headers(
   pattern = c("\\\\.h$", "\\\\.H$"),
   preprocess = FALSE,
   cc = r_cc(),
-  ccflags = r_ccflags()
+  ccflags = r_ccflags(),
+  include_dirs = NULL
 )
 }
 \arguments{
@@ -32,6 +33,8 @@ and the \code{cc} on PATH.}
 
 \item{ccflags}{Extra flags to pass to the compiler when preprocessing.
 If \code{NULL} flags are taken from \verb{R CMD config CFLAGS} and \verb{R CMD config CPPFLAGS}.}
+
+\item{include_dirs}{Additional directories to add to the include path for preprocessing. A character vector of directories.}
 }
 \value{
 A data frame with columns \code{name}, \code{file}, \code{line}, and \code{kind}
