@@ -10,6 +10,8 @@ get_function_nodes(root, extract_params = FALSE, extract_return = FALSE)
 \item{root}{A tree-sitter root node.}
 
 \item{extract_params}{Logical; whether to extract parameter types for found functions. Default FALSE.}
+
+\item{extract_return}{Logical; whether to extract return types for found functions. Default FALSE.}
 }
 \value{
 Data frame with function captures; when \code{extract_params=TRUE} a \code{params} list-column is present.

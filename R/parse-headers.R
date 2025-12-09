@@ -265,8 +265,7 @@ captures_to_df <- function(captures) {
       start_line = integer(0),
       start_col = integer(0),
       end_line = integer(0),
-      end_col = integer(0),
-      stringsAsFactors = FALSE
+      end_col = integer(0)
     ))
   }
 
@@ -335,8 +334,7 @@ captures_to_df <- function(captures) {
       start_line = start_line,
       start_col = start_col,
       end_line = end_line,
-      end_col = end_col,
-      stringsAsFactors = FALSE
+      end_col = end_col
     )
     # Keep the node list in case callers want to inspect the nodes directly
     df$node <- I(captures$node)
@@ -385,8 +383,7 @@ captures_to_df <- function(captures) {
     start_line = integer(0),
     start_col = integer(0),
     end_line = integer(0),
-    end_col = integer(0),
-    stringsAsFactors = FALSE
+    end_col = integer(0)
   )
 }
 
@@ -396,6 +393,7 @@ captures_to_df <- function(captures) {
 #' and `start_col`.
 #' @param root A tree-sitter root node.
 #' @param extract_params Logical; whether to extract parameter types for found functions. Default FALSE.
+#' @param extract_return Logical; whether to extract return types for found functions. Default FALSE.
 #' @return Data frame with function captures; when `extract_params=TRUE` a `params` list-column is present.
 #' @export
 get_function_nodes <- function(
@@ -582,8 +580,7 @@ get_function_nodes <- function(
       text = character(0),
       start_line = integer(0),
       start_col = integer(0),
-      params = I(list()),
-      stringsAsFactors = FALSE
+      params = I(list())
     ))
   }
   # Include params list-column if present
@@ -604,8 +601,7 @@ get_function_nodes <- function(
           x$return_type
         } else {
           NA_character_
-        },
-        stringsAsFactors = FALSE
+        }
       )
     })
   )
@@ -645,8 +641,7 @@ get_struct_nodes <- function(root) {
     return(data.frame(
       capture_name = character(0),
       text = character(0),
-      start_line = integer(0),
-      stringsAsFactors = FALSE
+      start_line = integer(0)
     ))
   }
   do.call(
@@ -655,8 +650,7 @@ get_struct_nodes <- function(root) {
       data.frame(
         capture_name = x$capture_name,
         text = x$text,
-        start_line = x$start_line,
-        stringsAsFactors = FALSE
+        start_line = x$start_line
       )
     })
   )
@@ -778,8 +772,7 @@ get_struct_members <- function(root) {
       member_name = character(0),
       member_type = character(0),
       bitfield = character(0),
-      nested_members = character(0),
-      stringsAsFactors = FALSE
+      nested_members = character(0)
     ))
   }
   do.call(
@@ -794,8 +787,7 @@ get_struct_members <- function(root) {
           x$nested_members
         } else {
           NA_character_
-        },
-        stringsAsFactors = FALSE
+        }
       )
     })
   )
@@ -834,8 +826,7 @@ get_enum_nodes <- function(root) {
     return(data.frame(
       capture_name = character(0),
       text = character(0),
-      start_line = integer(0),
-      stringsAsFactors = FALSE
+      start_line = integer(0)
     ))
   }
   do.call(
@@ -844,8 +835,7 @@ get_enum_nodes <- function(root) {
       data.frame(
         capture_name = x$capture_name,
         text = x$text,
-        start_line = x$start_line,
-        stringsAsFactors = FALSE
+        start_line = x$start_line
       )
     })
   )
@@ -884,8 +874,7 @@ get_union_nodes <- function(root) {
     return(data.frame(
       capture_name = character(0),
       text = character(0),
-      start_line = integer(0),
-      stringsAsFactors = FALSE
+      start_line = integer(0)
     ))
   }
   do.call(
@@ -894,8 +883,7 @@ get_union_nodes <- function(root) {
       data.frame(
         capture_name = x$capture_name,
         text = x$text,
-        start_line = x$start_line,
-        stringsAsFactors = FALSE
+        start_line = x$start_line
       )
     })
   )
@@ -942,8 +930,7 @@ get_globals_from_root <- function(root) {
     return(data.frame(
       capture_name = character(0),
       text = character(0),
-      start_line = integer(0),
-      stringsAsFactors = FALSE
+      start_line = integer(0)
     ))
   }
   do.call(
@@ -952,8 +939,7 @@ get_globals_from_root <- function(root) {
       data.frame(
         capture_name = x$capture_name,
         text = x$text,
-        start_line = x$start_line,
-        stringsAsFactors = FALSE
+        start_line = x$start_line
       )
     })
   )
@@ -1121,8 +1107,7 @@ parse_r_include_headers <- function(
       name = character(0),
       file = character(0),
       line = integer(0),
-      kind = character(0),
-      stringsAsFactors = FALSE
+      kind = character(0)
     ))
   }
   out <- list()
@@ -1152,9 +1137,7 @@ parse_r_include_headers <- function(
     root <- parse_header_text(content)
     funcs <- tryCatch(
       get_function_nodes(
-        root,
-        extract_params = extract_params,
-        extract_return = extract_return
+        root
       ),
       error = function(e) NULL
     )
@@ -1237,8 +1220,7 @@ parse_r_include_headers <- function(
       name = character(0),
       file = character(0),
       line = integer(0),
-      kind = character(0),
-      stringsAsFactors = FALSE
+      kind = character(0)
     ))
   }
   res <- do.call(
@@ -1248,8 +1230,7 @@ parse_r_include_headers <- function(
         name = x$name,
         file = x$file,
         line = x$line,
-        kind = x$kind,
-        stringsAsFactors = FALSE
+        kind = x$kind
       )
     })
   )
@@ -1276,6 +1257,7 @@ parse_r_include_headers <- function(
 #' @param ccflags Extra flags to pass to the compiler when preprocessing. If `NULL` flags are taken from `R CMD config CFLAGS` and `R CMD config CPPFLAGS`.
 #' @param include_dirs Additional directories to add to the include path for preprocessing. A character vector of directories.
 #' @param extract_params Logical; whether to extract parameter types for functions. Default `FALSE`.
+#' @param extract_return Logical; whether to extract return types for functions. Default `FALSE`.
 #' @return A named list of data frames with components: `functions`, `structs`, `struct_members`, `enums`, `unions`, `globals`, `defines`.
 #' @examples
 #' \dontrun{
@@ -1389,7 +1371,7 @@ parse_headers_collect <- function(
       error = function(e) NULL
     )
     if (!is.null(funcs) && nrow(funcs) > 0) {
-      func_df <- data.frame(file = f, funcs, stringsAsFactors = FALSE)
+      func_df <- data.frame(file = f, funcs)
       # Rename 'text' column from get_function_nodes to 'name' for convenience
       if ("text" %in% colnames(func_df)) {
         func_df$name <- func_df$text

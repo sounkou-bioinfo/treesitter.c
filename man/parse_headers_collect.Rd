@@ -33,6 +33,8 @@ parse_headers_collect(
 \item{include_dirs}{Additional directories to add to the include path for preprocessing. A character vector of directories.}
 
 \item{extract_params}{Logical; whether to extract parameter types for functions. Default \code{FALSE}.}
+
+\item{extract_return}{Logical; whether to extract return types for functions. Default \code{FALSE}.}
 }
 \value{
 A named list of data frames with components: \code{functions}, \code{structs}, \code{struct_members}, \code{enums}, \code{unions}, \code{globals}, \code{defines}.
