@@ -41,7 +41,21 @@ tree
 ```
 
 
-## Preprocessing with fake libc and no standard includes
+## Preprocessing and header parsing
+
+If you have a C compiler available and want to preprocess macros (recommended for headers that use macros), enable `preprocess = TRUE`. Prefer to use the helper `r_cc()` to detect the compiler automatically
+
+```{r eval=TRUE}
+# Check for a compiler and use include_dirs so the preprocessor can find nested headers
+cc <- treesitter.c::r_cc()
+hdr_df_pp <- parse_r_include_headers(
+    dir = R.home("include"),
+    preprocess = TRUE,
+    include_dirs = R.home("include")
+  )
+hdr_df_pp[grepl("Rf", x = hdr_df_pp$name), ] |> head(10)
+```
+
 
 You can use the `preprocess_header` function with extra compiler options to avoid system includes and use the bundled fake libc headers. This avoids system includes bloat.
 
@@ -66,18 +80,6 @@ cat(substr(preprocessed, 1, 500))
 
 This approach ensures only the fake libc headers are used, making preprocessing more predictable and portable.
 
-If you have a C compiler available and want to preprocess macros (recommended for headers that use macros), enable `preprocess = TRUE`. Prefer to use the helper `r_cc()` to detect the compiler automatically.
-
-```{r eval=TRUE}
-# Check for a compiler and use include_dirs so the preprocessor can find nested headers
-cc <- treesitter.c::r_cc()
-hdr_df_pp <- parse_r_include_headers(
-    dir = R.home("include"),
-    preprocess = TRUE,
-    include_dirs = R.home("include")
-  )
-hdr_df_pp[grepl("Rf", x = hdr_df_pp$name), ] |> head(10)
-```
 
 ## Parsing examples
 
