@@ -23,6 +23,7 @@ Useful links:
 Other contributors:
 \itemize{
   \item Tree-sitter authors (Tree-sitter C grammar) [copyright holder]
+  \item Eli Bendersky and Co-authors (pycparser fake_libc headers) [copyright holder]
 }
 
 }
