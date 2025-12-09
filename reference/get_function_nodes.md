@@ -20,6 +20,11 @@ get_function_nodes(root, extract_params = FALSE, extract_return = FALSE)
   Logical; whether to extract parameter types for found functions.
   Default FALSE.
 
+- extract_return:
+
+  Logical; whether to extract return types for found functions. Default
+  FALSE.
+
 ## Value
 
 Data frame with function captures; when `extract_params=TRUE` a `params`

@@ -13,7 +13,8 @@ preprocess_headers(
   recursive = TRUE,
   pattern = c("\\.h$", "\\.H$"),
   cc = r_cc(),
-  ccflags = NULL
+  ccflags = NULL,
+  ...
 )
 ```
 
@@ -38,6 +39,21 @@ preprocess_headers(
 - ccflags:
 
   Compiler flags; passed to `preprocess_header`.
+
+- ...:
+
+  Arguments passed on to
+  [`parse_r_include_headers`](https://sounkou-bioinfo.github.io/treesitter.c/reference/parse_r_include_headers.md)
+
+  `preprocess`
+
+  :   Run the C preprocessor (using R's configured CC) on header files
+      before parsing. Defaults to `FALSE`.
+
+  `include_dirs`
+
+  :   Additional directories to add to the include path for
+      preprocessing. A character vector of directories.
 
 ## Value
 

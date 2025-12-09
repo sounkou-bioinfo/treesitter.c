@@ -42,7 +42,7 @@ flag and returns the combined preprocessed output as a single string.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">preprocess_header</span><span class="op">(</span><span class="va">file</span>, cc <span class="op">=</span> <span class="fu"><a href="r_cc.html">r_cc</a></span><span class="op">(</span><span class="op">)</span>, ccflags <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">preprocess_header</span><span class="op">(</span><span class="va">file</span>, cc <span class="op">=</span> <span class="fu"><a href="r_cc.html">r_cc</a></span><span class="op">(</span><span class="op">)</span>, ccflags <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -59,6 +59,20 @@ flag and returns the combined preprocessed output as a single string.</p>
 
 <dt id="arg-ccflags">ccflags<a class="anchor" aria-label="anchor" href="#arg-ccflags"></a></dt>
 <dd><p>(Character) Additional flags to pass to the compiler.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Arguments passed on to <code><a href="preprocess_headers.html">preprocess_headers</a></code></p><dl><dt><code>dir</code></dt>
+<dd><p>Directory where header files will be searched.</p></dd>
+
+    <dt><code>recursive</code></dt>
+<dd><p>Logical; whether to search recursively.</p></dd>
+
+    <dt><code>pattern</code></dt>
+<dd><p>File name pattern(s) used to identify header files.</p></dd>
+
+
+</dl></dd>
 
 </dl></div>
     <div class="section level2">

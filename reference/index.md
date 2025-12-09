@@ -2,6 +2,9 @@
 
 ## All functions
 
+- [`fake_libc_path()`](https://sounkou-bioinfo.github.io/treesitter.c/reference/fake_libc_path.md)
+  : Get the path to the installed fake_libc headers
+
 - [`get_defines_from_file()`](https://sounkou-bioinfo.github.io/treesitter.c/reference/get_defines_from_file.md)
   :
 
@@ -37,8 +40,7 @@
 
 - [`parse_headers_collect()`](https://sounkou-bioinfo.github.io/treesitter.c/reference/parse_headers_collect.md)
   : Parse a directory of headers and return named list of data.frames
-  with functions, structs, struct members, enums, unions, globals, and
-  macros.
+  with
 
 - [`parse_r_include_headers()`](https://sounkou-bioinfo.github.io/treesitter.c/reference/parse_r_include_headers.md)
   : Parse C header files for function declarations using tree-sitter

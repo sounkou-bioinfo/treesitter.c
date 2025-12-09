@@ -55,7 +55,8 @@ typically where R's headers live.</p>
 <span>  preprocess <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  cc <span class="op">=</span> <span class="fu"><a href="r_cc.html">r_cc</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  ccflags <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  include_dirs <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  include_dirs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -97,6 +98,17 @@ If <code>NULL</code> flags are taken from <code>R CMD config CFLAGS</code> and <
 <dt id="arg-include-dirs">include_dirs<a class="anchor" aria-label="anchor" href="#arg-include-dirs"></a></dt>
 <dd><p>Additional directories to add to the include path for preprocessing. A character vector of directories.</p></dd>
 
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Arguments passed on to <code><a href="parse_headers_collect.html">parse_headers_collect</a></code></p><dl><dt><code>extract_params</code></dt>
+<dd><p>Logical; whether to extract parameter types for functions. Default <code>FALSE</code>.</p></dd>
+
+    <dt><code>extract_return</code></dt>
+<dd><p>Logical; whether to extract return types for functions. Default <code>FALSE</code>.</p></dd>
+
+
+</dl></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -117,8 +129,8 @@ If <code>NULL</code> flags are taken from <code>R CMD config CFLAGS</code> and <
 <span class="r-in"><span>    <span class="fu">parse_r_include_headers</span><span class="op">(</span>dir <span class="op">=</span> <span class="va">tmp</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   name                      file line        kind</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  foo /tmp/RtmpF26OCT/example.h    1 declaration</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  bar /tmp/RtmpF26OCT/example.h    2  definition</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  foo /tmp/RtmpYOOlve/example.h    1 declaration</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  bar /tmp/RtmpYOOlve/example.h    2  definition</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

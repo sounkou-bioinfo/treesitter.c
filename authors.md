@@ -7,6 +7,9 @@
 - **Tree-sitter authors**. Copyright holder.  
   Tree-sitter C grammar
 
+- **Eli Bendersky and Co-authors**. Copyright holder.  
+  pycparser fake_libc headers
+
 ## Citation
 
 Source:

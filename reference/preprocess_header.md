@@ -6,7 +6,7 @@ flag and returns the combined preprocessed output as a single string.
 ## Usage
 
 ``` r
-preprocess_header(file, cc = r_cc(), ccflags = NULL)
+preprocess_header(file, cc = r_cc(), ccflags = NULL, ...)
 ```
 
 ## Arguments
@@ -23,6 +23,23 @@ preprocess_header(file, cc = r_cc(), ccflags = NULL)
 - ccflags:
 
   (Character) Additional flags to pass to the compiler.
+
+- ...:
+
+  Arguments passed on to
+  [`preprocess_headers`](https://sounkou-bioinfo.github.io/treesitter.c/reference/preprocess_headers.md)
+
+  `dir`
+
+  :   Directory where header files will be searched.
+
+  `recursive`
+
+  :   Logical; whether to search recursively.
+
+  `pattern`
+
+  :   File name pattern(s) used to identify header files.
 
 ## Value
 

@@ -15,7 +15,8 @@ parse_r_include_headers(
   preprocess = FALSE,
   cc = r_cc(),
   ccflags = NULL,
-  include_dirs = NULL
+  include_dirs = NULL,
+  ...
 )
 ```
 
@@ -55,6 +56,21 @@ parse_r_include_headers(
   Additional directories to add to the include path for preprocessing. A
   character vector of directories.
 
+- ...:
+
+  Arguments passed on to
+  [`parse_headers_collect`](https://sounkou-bioinfo.github.io/treesitter.c/reference/parse_headers_collect.md)
+
+  `extract_params`
+
+  :   Logical; whether to extract parameter types for functions. Default
+      `FALSE`.
+
+  `extract_return`
+
+  :   Logical; whether to extract return types for functions. Default
+      `FALSE`.
+
 ## Value
 
 A data frame with columns `name`, `file`, `line`, and `kind` (either
@@ -74,6 +90,6 @@ if (requireNamespace("treesitter", quietly = TRUE)) {
     parse_r_include_headers(dir = tmp)
 }
 #>   name                      file line        kind
-#> 1  foo /tmp/RtmpF26OCT/example.h    1 declaration
-#> 2  bar /tmp/RtmpF26OCT/example.h    2  definition
+#> 1  foo /tmp/RtmpYOOlve/example.h    1 declaration
+#> 2  bar /tmp/RtmpYOOlve/example.h    2  definition
 ```

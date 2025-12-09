@@ -50,7 +50,8 @@ preprocessed text as the values.</p>
 <span>  recursive <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  pattern <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"\\.h$"</span>, <span class="st">"\\.H$"</span><span class="op">)</span>,</span>
 <span>  cc <span class="op">=</span> <span class="fu"><a href="r_cc.html">r_cc</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  ccflags <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  ccflags <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -76,6 +77,18 @@ preprocessed text as the values.</p>
 
 <dt id="arg-ccflags">ccflags<a class="anchor" aria-label="anchor" href="#arg-ccflags"></a></dt>
 <dd><p>Compiler flags; passed to <code>preprocess_header</code>.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Arguments passed on to <code><a href="parse_r_include_headers.html">parse_r_include_headers</a></code></p><dl><dt><code>preprocess</code></dt>
+<dd><p>Run the C preprocessor (using R's configured CC) on
+header files before parsing. Defaults to <code>FALSE</code>.</p></dd>
+
+    <dt><code>include_dirs</code></dt>
+<dd><p>Additional directories to add to the include path for preprocessing. A character vector of directories.</p></dd>
+
+
+</dl></dd>
 
 </dl></div>
     <div class="section level2">

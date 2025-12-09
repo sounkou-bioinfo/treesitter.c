@@ -1,8 +1,6 @@
-# Parse a directory of headers and return named list of data.frames with functions, structs, struct members, enums, unions, globals, and macros.
+# Parse a directory of headers and return named list of data.frames with
 
-This helper loops over headers found in a directory and returns a list
-with tidy data.frames. Useful for programmatic analysis of header
-collections.
+functions, structs, struct members, enums, unions, globals, and macros.
 
 ## Usage
 
@@ -16,7 +14,8 @@ parse_headers_collect(
   ccflags = NULL,
   include_dirs = NULL,
   extract_params = FALSE,
-  extract_return = FALSE
+  extract_return = FALSE,
+  ...
 )
 ```
 
@@ -61,10 +60,26 @@ parse_headers_collect(
   Logical; whether to extract parameter types for functions. Default
   `FALSE`.
 
+- extract_return:
+
+  Logical; whether to extract return types for functions. Default
+  `FALSE`.
+
+- ...:
+
+  Additional arguments passed to preprocess_header (e.g., extra compiler
+  flags)
+
 ## Value
 
 A named list of data frames with components: `functions`, `structs`,
 `struct_members`, `enums`, `unions`, `globals`, `defines`.
+
+## Details
+
+This helper loops over headers found in a directory and returns a list
+with tidy data.frames. Useful for programmatic analysis of header
+collections.
 
 ## Examples
 

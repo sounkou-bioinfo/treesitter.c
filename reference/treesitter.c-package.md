@@ -24,3 +24,6 @@ Useful links:
 Other contributors:
 
 - Tree-sitter authors (Tree-sitter C grammar) \[copyright holder\]
+
+- Eli Bendersky and Co-authors (pycparser fake_libc headers) \[copyright
+  holder\]
