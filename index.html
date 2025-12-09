@@ -133,11 +133,26 @@
 <span></span>
 <span><span class="co"># Preprocess with -nostdinc and -I pointing to fake_libc</span></span>
 <span><span class="va">preprocessed</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/preprocess_header.html">preprocess_header</a></span><span class="op">(</span></span>
-<span>  <span class="va">header_file</span>,</span>
-<span>  ccflags <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="st">"-nostdinc"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"-I"</span>, <span class="va">fake_libc</span><span class="op">)</span></span>
+<span>   file <span class="op">=</span> <span class="va">header_file</span>,</span>
+<span>   cc <span class="op">=</span> <span class="fu"><a href="reference/r_cc.html">r_cc</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    ccflags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"-I"</span>, <span class="va">fake_libc</span><span class="op">)</span>,</span>
+<span>  <span class="st">"-nostdinc"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/substr.html" class="external-link">substr</a></span><span class="op">(</span><span class="va">preprocessed</span>, <span class="fl">1</span>, <span class="fl">500</span><span class="op">)</span><span class="op">)</span> <span class="co"># Show first 500 chars</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/substr.html" class="external-link">substr</a></span><span class="op">(</span><span class="va">preprocessed</span>, <span class="fl">1</span>, <span class="fl">500</span><span class="op">)</span><span class="op">)</span> </span>
+<span><span class="co">#&gt; # 0 "/usr/share/R/include/Rinternals.h"</span></span>
+<span><span class="co">#&gt; # 0 "&lt;built-in&gt;"</span></span>
+<span><span class="co">#&gt; # 0 "&lt;command-line&gt;"</span></span>
+<span><span class="co">#&gt; # 1 "/usr/share/R/include/Rinternals.h"</span></span>
+<span><span class="co">#&gt; # 38 "/usr/share/R/include/Rinternals.h"</span></span>
+<span><span class="co">#&gt; # 1 "/usr/local/lib/R/site-library/treesitter.c/fake_libc/stdio.h" 1</span></span>
+<span><span class="co">#&gt; # 1 "/usr/local/lib/R/site-library/treesitter.c/fake_libc/_fake_defines.h" 1</span></span>
+<span><span class="co">#&gt; # 2 "/usr/local/lib/R/site-library/treesitter.c/fake_libc/stdio.h" 2</span></span>
+<span><span class="co">#&gt; # 1 "/usr/local/lib/R/site-library/treesitter.c/fake_libc/_fake_typedefs.h" 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; typedef int size_t;</span></span>
+<span><span class="co">#&gt; typedef int __builtin_va_</span></span></code></pre></div>
 <p>This approach ensures only the fake libc headers are used, making preprocessing more predictable and portable.</p>
 <p>If you have a C compiler available and want to preprocess macros (recommended for headers that use macros), enable <code>preprocess = TRUE</code>. Prefer to use the helper <code><a href="reference/r_cc.html">r_cc()</a></code> to detect the compiler automatically.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -150,16 +165,16 @@
 <span>  <span class="op">)</span></span>
 <span><span class="va">hdr_df_pp</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Rf"</span>, x <span class="op">=</span> <span class="va">hdr_df_pp</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="op">]</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                  name                                   file line        kind</span></span>
-<span><span class="co">#&gt; 1315         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2109 declaration</span></span>
-<span><span class="co">#&gt; 1318       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2115 declaration</span></span>
-<span><span class="co">#&gt; 1335       Rf_revsort /usr/share/R/include/R_ext/Callbacks.h 2154 declaration</span></span>
-<span><span class="co">#&gt; 1336        Rf_iPsort /usr/share/R/include/R_ext/Callbacks.h 2155 declaration</span></span>
-<span><span class="co">#&gt; 1337        Rf_rPsort /usr/share/R/include/R_ext/Callbacks.h 2156 declaration</span></span>
-<span><span class="co">#&gt; 1338        Rf_cPsort /usr/share/R/include/R_ext/Callbacks.h 2157 declaration</span></span>
-<span><span class="co">#&gt; 1344   Rf_StringFalse /usr/share/R/include/R_ext/Callbacks.h 2173 declaration</span></span>
-<span><span class="co">#&gt; 1345    Rf_StringTrue /usr/share/R/include/R_ext/Callbacks.h 2174 declaration</span></span>
-<span><span class="co">#&gt; 1346 Rf_isBlankString /usr/share/R/include/R_ext/Callbacks.h 2175 declaration</span></span>
-<span><span class="co">#&gt; 1367        Rf_isNull /usr/share/R/include/R_ext/Callbacks.h 2285 declaration</span></span></code></pre></div>
+<span><span class="co">#&gt; 1216         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2109 declaration</span></span>
+<span><span class="co">#&gt; 1219       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2115 declaration</span></span>
+<span><span class="co">#&gt; 1228       Rf_revsort /usr/share/R/include/R_ext/Callbacks.h 2154 declaration</span></span>
+<span><span class="co">#&gt; 1229        Rf_iPsort /usr/share/R/include/R_ext/Callbacks.h 2155 declaration</span></span>
+<span><span class="co">#&gt; 1230        Rf_rPsort /usr/share/R/include/R_ext/Callbacks.h 2156 declaration</span></span>
+<span><span class="co">#&gt; 1231        Rf_cPsort /usr/share/R/include/R_ext/Callbacks.h 2157 declaration</span></span>
+<span><span class="co">#&gt; 1236   Rf_StringFalse /usr/share/R/include/R_ext/Callbacks.h 2173 declaration</span></span>
+<span><span class="co">#&gt; 1237    Rf_StringTrue /usr/share/R/include/R_ext/Callbacks.h 2174 declaration</span></span>
+<span><span class="co">#&gt; 1238 Rf_isBlankString /usr/share/R/include/R_ext/Callbacks.h 2175 declaration</span></span>
+<span><span class="co">#&gt; 1290        Rf_asChar /usr/share/R/include/R_ext/Callbacks.h 2509 declaration</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="parsing-examples">Parsing examples<a class="anchor" aria-label="anchor" href="#parsing-examples"></a>
