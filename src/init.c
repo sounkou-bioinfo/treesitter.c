@@ -4,11 +4,12 @@
 #include <R_ext/Rdynload.h>
 
 // Forward declarations
-SEXP ffi_language(void);
-
+SEXP treesitter_language(void);
+SEXP treesitter_language_abi(void);
 // Symbol registration
 static const R_CallMethodDef CallEntries[] = {
-  {"ffi_language", (DL_FUNC) &ffi_language, 0},
+  {"treesitter_language", (DL_FUNC) &treesitter_language, 0},
+  {"treesitter_language_abi", (DL_FUNC) &treesitter_language_abi, 0},
   {NULL, NULL, 0}
 };
 

@@ -9,7 +9,7 @@
 #' @examples
 #' language()
 language <- function() {
-  pointer <- .Call(ffi_language)
+  pointer <- .Call(treesitter_language)
 
   new_language(
     pointer = pointer,

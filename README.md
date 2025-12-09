@@ -35,14 +35,14 @@ tree <- parser_parse(parser, code)
 tree
 #> <tree_sitter_tree>
 #> 
-#> ── Text ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── Text ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> struct Point {
 #>   int x[MAX_SIZE];
 #>   int y;
 #> };
 #> 
 #> 
-#> ── S-Expression ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── S-Expression ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> (translation_unit [(1, 0), (5, 0)]
 #>   (struct_specifier [(1, 0), (4, 1)]
 #>     "struct" [(1, 0), (1, 6)]
@@ -125,16 +125,16 @@ hdr_df_pp <- parse_r_include_headers(
   )
 hdr_df_pp[grepl("Rf", x = hdr_df_pp$name), ] |> head(10)
 #>                  name                                   file line        kind
-#> 1597         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2522 declaration
-#> 1600       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2528 declaration
-#> 1617       Rf_revsort /usr/share/R/include/R_ext/Callbacks.h 2567 declaration
-#> 1618        Rf_iPsort /usr/share/R/include/R_ext/Callbacks.h 2568 declaration
-#> 1619        Rf_rPsort /usr/share/R/include/R_ext/Callbacks.h 2569 declaration
-#> 1620        Rf_cPsort /usr/share/R/include/R_ext/Callbacks.h 2570 declaration
-#> 1626   Rf_StringFalse /usr/share/R/include/R_ext/Callbacks.h 2586 declaration
-#> 1627    Rf_StringTrue /usr/share/R/include/R_ext/Callbacks.h 2587 declaration
-#> 1628 Rf_isBlankString /usr/share/R/include/R_ext/Callbacks.h 2588 declaration
-#> 1649        Rf_isNull /usr/share/R/include/R_ext/Callbacks.h 2698 declaration
+#> 1315         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2109 declaration
+#> 1318       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2115 declaration
+#> 1335       Rf_revsort /usr/share/R/include/R_ext/Callbacks.h 2154 declaration
+#> 1336        Rf_iPsort /usr/share/R/include/R_ext/Callbacks.h 2155 declaration
+#> 1337        Rf_rPsort /usr/share/R/include/R_ext/Callbacks.h 2156 declaration
+#> 1338        Rf_cPsort /usr/share/R/include/R_ext/Callbacks.h 2157 declaration
+#> 1344   Rf_StringFalse /usr/share/R/include/R_ext/Callbacks.h 2173 declaration
+#> 1345    Rf_StringTrue /usr/share/R/include/R_ext/Callbacks.h 2174 declaration
+#> 1346 Rf_isBlankString /usr/share/R/include/R_ext/Callbacks.h 2175 declaration
+#> 1367        Rf_isNull /usr/share/R/include/R_ext/Callbacks.h 2285 declaration
 ```
 
 ## API Examples
@@ -210,9 +210,8 @@ head(res$functions)
 path <- file.path(R.home("include"), "Rembedded.h")
 defs <- get_defines_from_file(path, use_cpp = TRUE, ccflags = paste("-I", dirname(path)))
   head(defs)
-#> [1] "__DBL_MIN_EXP__"         "__UINT_LEAST16_MAX__"   
-#> [3] "_STDBOOL_H"              "__FLT16_HAS_QUIET_NAN__"
-#> [5] "__ATOMIC_ACQUIRE"        "__FLT128_MAX_10_EXP__"
+#> [1] "__SSP_STRONG__"        "__DBL_MIN_EXP__"       "__UINT_LEAST16_MAX__" 
+#> [4] "_STDBOOL_H"            "__ATOMIC_ACQUIRE"      "__FLT128_MAX_10_EXP__"
 ```
 
 ## Details On the Used Grammar
@@ -220,7 +219,7 @@ defs <- get_defines_from_file(path, use_cpp = TRUE, ccflags = paste("-I", dirnam
 treesiter ABI Version 14, compatible with treesitter package version
 0.3.0. The C grammar source used for bootstrapping was downloaded from
 <https://github.com/tree-sitter/tree-sitter-c>. The pre-generated
-`parser.c` from upstream is ~3.7 MB and contains pragma directives that
+`parser.c` from upstream is \~3.7 MB and contains pragma directives that
 trigger CRAN check warnings.
 
 During bootstrap (`bootstrap.R`), all `#pragma` directives are
