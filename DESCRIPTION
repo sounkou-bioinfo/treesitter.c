@@ -5,6 +5,7 @@ Version: 0.0.2.9000
 Authors@R: c(
     person(given = "Sounkou Mahamane", family = "Toure", email = "sounkoutoure@gmail.com", role = c("aut", "cre")),
     person("Tree-sitter authors", role = "cph", comment = "Tree-sitter C grammar"))
+    person("Eli Bendersky and Co-authors", role = "cph", comment = "pycparser fake_libc headers")
 Description: Provides bindings to a 'C' grammar for Tree-sitter, to be used
     alongside the 'treesitter' package. Tree-sitter builds concrete syntax trees
     for source files and can efficiently update them or generate code like producing 
