@@ -88,11 +88,26 @@ fake_libc <- fake_libc_path()
 
 # Preprocess with -nostdinc and -I pointing to fake_libc
 preprocessed <- preprocess_header(
-  header_file,
-  ccflags = NULL,
-  "-nostdinc", paste0("-I", fake_libc)
+   file = header_file,
+   cc = r_cc(),
+    ccflags = paste0("-I", fake_libc),
+  "-nostdinc"
 )
-cat(substr(preprocessed, 1, 500)) # Show first 500 chars
+cat(substr(preprocessed, 1, 500)) 
+#> # 0 "/usr/share/R/include/Rinternals.h"
+#> # 0 "<built-in>"
+#> # 0 "<command-line>"
+#> # 1 "/usr/share/R/include/Rinternals.h"
+#> # 38 "/usr/share/R/include/Rinternals.h"
+#> # 1 "/usr/local/lib/R/site-library/treesitter.c/fake_libc/stdio.h" 1
+#> # 1 "/usr/local/lib/R/site-library/treesitter.c/fake_libc/_fake_defines.h" 1
+#> # 2 "/usr/local/lib/R/site-library/treesitter.c/fake_libc/stdio.h" 2
+#> # 1 "/usr/local/lib/R/site-library/treesitter.c/fake_libc/_fake_typedefs.h" 1
+#> 
+#> 
+#> 
+#> typedef int size_t;
+#> typedef int __builtin_va_
 ```
 
 This approach ensures only the fake libc headers are used, making
@@ -112,16 +127,16 @@ hdr_df_pp <- parse_r_include_headers(
   )
 hdr_df_pp[grepl("Rf", x = hdr_df_pp$name), ] |> head(10)
 #>                  name                                   file line        kind
-#> 1315         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2109 declaration
-#> 1318       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2115 declaration
-#> 1335       Rf_revsort /usr/share/R/include/R_ext/Callbacks.h 2154 declaration
-#> 1336        Rf_iPsort /usr/share/R/include/R_ext/Callbacks.h 2155 declaration
-#> 1337        Rf_rPsort /usr/share/R/include/R_ext/Callbacks.h 2156 declaration
-#> 1338        Rf_cPsort /usr/share/R/include/R_ext/Callbacks.h 2157 declaration
-#> 1344   Rf_StringFalse /usr/share/R/include/R_ext/Callbacks.h 2173 declaration
-#> 1345    Rf_StringTrue /usr/share/R/include/R_ext/Callbacks.h 2174 declaration
-#> 1346 Rf_isBlankString /usr/share/R/include/R_ext/Callbacks.h 2175 declaration
-#> 1367        Rf_isNull /usr/share/R/include/R_ext/Callbacks.h 2285 declaration
+#> 1216         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2109 declaration
+#> 1219       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2115 declaration
+#> 1228       Rf_revsort /usr/share/R/include/R_ext/Callbacks.h 2154 declaration
+#> 1229        Rf_iPsort /usr/share/R/include/R_ext/Callbacks.h 2155 declaration
+#> 1230        Rf_rPsort /usr/share/R/include/R_ext/Callbacks.h 2156 declaration
+#> 1231        Rf_cPsort /usr/share/R/include/R_ext/Callbacks.h 2157 declaration
+#> 1236   Rf_StringFalse /usr/share/R/include/R_ext/Callbacks.h 2173 declaration
+#> 1237    Rf_StringTrue /usr/share/R/include/R_ext/Callbacks.h 2174 declaration
+#> 1238 Rf_isBlankString /usr/share/R/include/R_ext/Callbacks.h 2175 declaration
+#> 1290        Rf_asChar /usr/share/R/include/R_ext/Callbacks.h 2509 declaration
 ```
 
 ## Parsing examples
