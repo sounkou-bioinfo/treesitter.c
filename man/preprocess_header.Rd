@@ -4,7 +4,7 @@
 \alias{preprocess_header}
 \title{Run the C preprocessor on \code{file} using the provided compiler}
 \usage{
-preprocess_header(file, cc = r_cc(), ccflags = NULL)
+preprocess_header(file, cc = r_cc(), ccflags = NULL, ...)
 }
 \arguments{
 \item{file}{Path to a header file to preprocess.}
@@ -12,6 +12,14 @@ preprocess_header(file, cc = r_cc(), ccflags = NULL)
 \item{cc}{(Character) Compiler command to use. If \code{NULL}, resolved via \code{r_cc()}.}
 
 \item{ccflags}{(Character) Additional flags to pass to the compiler.}
+
+\item{...}{
+  Arguments passed on to \code{\link[=preprocess_headers]{preprocess_headers}}
+  \describe{
+    \item{\code{dir}}{Directory where header files will be searched.}
+    \item{\code{recursive}}{Logical; whether to search recursively.}
+    \item{\code{pattern}}{File name pattern(s) used to identify header files.}
+  }}
 }
 \value{
 Character scalar with the preprocessed output of \code{file}.

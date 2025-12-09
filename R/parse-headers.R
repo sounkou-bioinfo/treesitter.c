@@ -77,12 +77,14 @@ r_ccflags <- function() {
 
 #' Run the C preprocessor on `file` using the provided compiler
 #'
+#'
 #' This function runs the configured C compiler with the `-E` preprocessor
 #' flag and returns the combined preprocessed output as a single string.
 #'
 #' @param file Path to a header file to preprocess.
 #' @param cc (Character) Compiler command to use. If `NULL`, resolved via `r_cc()`.
 #' @param ccflags (Character) Additional flags to pass to the compiler.
+#' @inheritDotParams preprocess_headers
 #' @return Character scalar with the preprocessed output of `file`.
 #' @examples
 #' \dontrun{
@@ -103,7 +105,7 @@ r_ccflags <- function() {
 #' }
 #' }
 #' @export
-preprocess_header <- function(file, cc = r_cc(), ccflags = NULL) {
+preprocess_header <- function(file, cc = r_cc(), ccflags = NULL, ...) {
   if (!nzchar(file) || !file.exists(file)) {
     stop("`file` must point to an existing path")
   }
@@ -128,7 +130,7 @@ preprocess_header <- function(file, cc = r_cc(), ccflags = NULL) {
   } else {
     character(0)
   }
-  args <- c(cc_prog_args, flags, "-E", file)
+  args <- c(cc_prog_args, flags, "-E", file, ...)
   preprocessed <- tryCatch(
     suppressWarnings(system2(cc_prog, args, stdout = TRUE, stderr = TRUE)),
     error = function(e) stop("Failed to run preprocessor: ", e$message)
@@ -141,6 +143,7 @@ preprocess_header <- function(file, cc = r_cc(), ccflags = NULL) {
 
 #' Preprocess a set of header files found under `dir`
 #'
+#'
 #' This helper calls `preprocess_header()` for each matching file in
 #' `dir` and returns a named list with the path as the keys and the
 #' preprocessed text as the values.
@@ -150,6 +153,7 @@ preprocess_header <- function(file, cc = r_cc(), ccflags = NULL) {
 #' @param pattern File name pattern(s) used to identify header files.
 #' @param cc Compiler string; passed to `preprocess_header`.
 #' @param ccflags Compiler flags; passed to `preprocess_header`.
+#' @inheritDotParams parse_r_include_headers
 #' @return Named list of file => preprocessed text.
 #' @export
 preprocess_headers <- function(
@@ -157,7 +161,8 @@ preprocess_headers <- function(
   recursive = TRUE,
   pattern = c("\\.h$", "\\.H$"),
   cc = r_cc(),
-  ccflags = NULL
+  ccflags = NULL,
+  ...
 ) {
   files <- list.files(
     dir,
@@ -172,7 +177,7 @@ preprocess_headers <- function(
     } else {
       ccflags
     }
-    out[[f]] <- preprocess_header(f, cc = cc, ccflags = flags)
+    out[[f]] <- preprocess_header(f, cc = cc, ccflags = flags, ...)
   }
   out
 }
@@ -1046,6 +1051,7 @@ get_defines_from_file <- function(
 
 #' Parse C header files for function declarations using tree-sitter
 #'
+#'
 #' This utility uses the C language provided by this package and the
 #' treesitter parser to find function declarations and definitions in
 #' C header files. The default `dir` is `R.home("include")`, which is
@@ -1065,6 +1071,7 @@ get_defines_from_file <- function(
 #' @param ccflags Extra flags to pass to the compiler when preprocessing.
 #'   If `NULL` flags are taken from `R CMD config CFLAGS` and `R CMD config CPPFLAGS`.
 #' @param include_dirs Additional directories to add to the include path for preprocessing. A character vector of directories.
+#' @inheritDotParams parse_headers_collect
 #' @return A data frame with columns `name`, `file`, `line`, and `kind`
 #'   (either 'declaration' or 'definition').
 #' @examples
@@ -1086,7 +1093,8 @@ parse_r_include_headers <- function(
   preprocess = FALSE,
   cc = r_cc(),
   ccflags = NULL,
-  include_dirs = NULL
+  include_dirs = NULL,
+  ...
 ) {
   if (!requireNamespace("treesitter", quietly = TRUE)) {
     stop(
@@ -1129,7 +1137,8 @@ parse_r_include_headers <- function(
       preprocess_header(
         f,
         cc = cc,
-        ccflags = paste(flags, paste(extra, collapse = " "))
+        ccflags = paste(flags, paste(extra, collapse = " ")),
+        ...
       )
     } else {
       paste(readLines(f, warn = FALSE), collapse = "\n")
@@ -1243,6 +1252,7 @@ parse_r_include_headers <- function(
 #+ Convenience: parse headers directory and return many kinds of results
 #+
 #' Parse a directory of headers and return named list of data.frames with
+#'
 #' functions, structs, struct members, enums, unions, globals, and macros.
 #'
 #' This helper loops over headers found in a directory and returns a list
@@ -1258,6 +1268,7 @@ parse_r_include_headers <- function(
 #' @param include_dirs Additional directories to add to the include path for preprocessing. A character vector of directories.
 #' @param extract_params Logical; whether to extract parameter types for functions. Default `FALSE`.
 #' @param extract_return Logical; whether to extract return types for functions. Default `FALSE`.
+#' @param ... Additional arguments passed to preprocess_header (e.g., extra compiler flags)
 #' @return A named list of data frames with components: `functions`, `structs`, `struct_members`, `enums`, `unions`, `globals`, `defines`.
 #' @examples
 #' \dontrun{
@@ -1276,7 +1287,8 @@ parse_headers_collect <- function(
   ccflags = NULL,
   include_dirs = NULL,
   extract_params = FALSE,
-  extract_return = FALSE
+  extract_return = FALSE,
+  ...
 ) {
   if (!requireNamespace("treesitter", quietly = TRUE)) {
     stop("treesitter required")
@@ -1353,7 +1365,8 @@ parse_headers_collect <- function(
       preprocess_header(
         f,
         cc = cc,
-        ccflags = paste(ccflags, paste(extra, collapse = " "))
+        ccflags = paste(ccflags, paste(extra, collapse = " ")),
+        ...
       )
     } else {
       paste(readLines(f, warn = FALSE), collapse = "\n")

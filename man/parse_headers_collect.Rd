@@ -2,8 +2,7 @@
 % Please edit documentation in R/parse-headers.R
 \name{parse_headers_collect}
 \alias{parse_headers_collect}
-\title{Parse a directory of headers and return named list of data.frames with
-functions, structs, struct members, enums, unions, globals, and macros.}
+\title{Parse a directory of headers and return named list of data.frames with}
 \usage{
 parse_headers_collect(
   dir = R.home("include"),
@@ -14,7 +13,8 @@ parse_headers_collect(
   ccflags = NULL,
   include_dirs = NULL,
   extract_params = FALSE,
-  extract_return = FALSE
+  extract_return = FALSE,
+  ...
 )
 }
 \arguments{
@@ -35,11 +35,16 @@ parse_headers_collect(
 \item{extract_params}{Logical; whether to extract parameter types for functions. Default \code{FALSE}.}
 
 \item{extract_return}{Logical; whether to extract return types for functions. Default \code{FALSE}.}
+
+\item{...}{Additional arguments passed to preprocess_header (e.g., extra compiler flags)}
 }
 \value{
 A named list of data frames with components: \code{functions}, \code{structs}, \code{struct_members}, \code{enums}, \code{unions}, \code{globals}, \code{defines}.
 }
 \description{
+functions, structs, struct members, enums, unions, globals, and macros.
+}
+\details{
 This helper loops over headers found in a directory and returns a list
 with tidy data.frames. Useful for programmatic analysis of header
 collections.

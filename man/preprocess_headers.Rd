@@ -9,7 +9,8 @@ preprocess_headers(
   recursive = TRUE,
   pattern = c("\\\\.h$", "\\\\.H$"),
   cc = r_cc(),
-  ccflags = NULL
+  ccflags = NULL,
+  ...
 )
 }
 \arguments{
@@ -22,6 +23,14 @@ preprocess_headers(
 \item{cc}{Compiler string; passed to \code{preprocess_header}.}
 
 \item{ccflags}{Compiler flags; passed to \code{preprocess_header}.}
+
+\item{...}{
+  Arguments passed on to \code{\link[=parse_r_include_headers]{parse_r_include_headers}}
+  \describe{
+    \item{\code{preprocess}}{Run the C preprocessor (using R's configured CC) on
+header files before parsing. Defaults to \code{FALSE}.}
+    \item{\code{include_dirs}}{Additional directories to add to the include path for preprocessing. A character vector of directories.}
+  }}
 }
 \value{
 Named list of file => preprocessed text.

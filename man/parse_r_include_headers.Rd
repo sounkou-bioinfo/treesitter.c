@@ -11,7 +11,8 @@ parse_r_include_headers(
   preprocess = FALSE,
   cc = r_cc(),
   ccflags = NULL,
-  include_dirs = NULL
+  include_dirs = NULL,
+  ...
 )
 }
 \arguments{
@@ -35,6 +36,13 @@ and the \code{cc} on PATH.}
 If \code{NULL} flags are taken from \verb{R CMD config CFLAGS} and \verb{R CMD config CPPFLAGS}.}
 
 \item{include_dirs}{Additional directories to add to the include path for preprocessing. A character vector of directories.}
+
+\item{...}{
+  Arguments passed on to \code{\link[=parse_headers_collect]{parse_headers_collect}}
+  \describe{
+    \item{\code{extract_params}}{Logical; whether to extract parameter types for functions. Default \code{FALSE}.}
+    \item{\code{extract_return}}{Logical; whether to extract return types for functions. Default \code{FALSE}.}
+  }}
 }
 \value{
 A data frame with columns \code{name}, \code{file}, \code{line}, and \code{kind}
