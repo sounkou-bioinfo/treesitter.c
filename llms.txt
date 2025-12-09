@@ -70,7 +70,35 @@ tree
 #> <truncated>
 ```
 
-## Preprocessing with fake libc and no standard includes
+## Preprocessing and header parsing
+
+If you have a C compiler available and want to preprocess macros
+(recommended for headers that use macros), enable `preprocess = TRUE`.
+Prefer to use the helper
+[`r_cc()`](https://sounkou-bioinfo.github.io/treesitter.c/reference/r_cc.md)
+to detect the compiler automatically.
+
+``` r
+# Check for a compiler and use include_dirs so the preprocessor can find nested headers
+cc <- treesitter.c::r_cc()
+hdr_df_pp <- parse_r_include_headers(
+    dir = R.home("include"),
+    preprocess = TRUE,
+    include_dirs = R.home("include")
+  )
+hdr_df_pp[grepl("Rf", x = hdr_df_pp$name), ] |> head(10)
+#>                  name                                   file line        kind
+#> 1216         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2109 declaration
+#> 1219       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2115 declaration
+#> 1228       Rf_revsort /usr/share/R/include/R_ext/Callbacks.h 2154 declaration
+#> 1229        Rf_iPsort /usr/share/R/include/R_ext/Callbacks.h 2155 declaration
+#> 1230        Rf_rPsort /usr/share/R/include/R_ext/Callbacks.h 2156 declaration
+#> 1231        Rf_cPsort /usr/share/R/include/R_ext/Callbacks.h 2157 declaration
+#> 1236   Rf_StringFalse /usr/share/R/include/R_ext/Callbacks.h 2173 declaration
+#> 1237    Rf_StringTrue /usr/share/R/include/R_ext/Callbacks.h 2174 declaration
+#> 1238 Rf_isBlankString /usr/share/R/include/R_ext/Callbacks.h 2175 declaration
+#> 1290        Rf_asChar /usr/share/R/include/R_ext/Callbacks.h 2509 declaration
+```
 
 You can use the `preprocess_header` function with extra compiler options
 to avoid system includes and use the bundled fake libc headers. This
@@ -111,34 +139,6 @@ cat(substr(preprocessed, 1, 500))
 
 This approach ensures only the fake libc headers are used, making
 preprocessing more predictable and portable.
-
-If you have a C compiler available and want to preprocess macros
-(recommended for headers that use macros), enable `preprocess = TRUE`.
-Prefer to use the helper
-[`r_cc()`](https://sounkou-bioinfo.github.io/treesitter.c/reference/r_cc.md)
-to detect the compiler automatically.
-
-``` r
-# Check for a compiler and use include_dirs so the preprocessor can find nested headers
-cc <- treesitter.c::r_cc()
-hdr_df_pp <- parse_r_include_headers(
-    dir = R.home("include"),
-    preprocess = TRUE,
-    include_dirs = R.home("include")
-  )
-hdr_df_pp[grepl("Rf", x = hdr_df_pp$name), ] |> head(10)
-#>                  name                                   file line        kind
-#> 1216         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2109 declaration
-#> 1219       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2115 declaration
-#> 1228       Rf_revsort /usr/share/R/include/R_ext/Callbacks.h 2154 declaration
-#> 1229        Rf_iPsort /usr/share/R/include/R_ext/Callbacks.h 2155 declaration
-#> 1230        Rf_rPsort /usr/share/R/include/R_ext/Callbacks.h 2156 declaration
-#> 1231        Rf_cPsort /usr/share/R/include/R_ext/Callbacks.h 2157 declaration
-#> 1236   Rf_StringFalse /usr/share/R/include/R_ext/Callbacks.h 2173 declaration
-#> 1237    Rf_StringTrue /usr/share/R/include/R_ext/Callbacks.h 2174 declaration
-#> 1238 Rf_isBlankString /usr/share/R/include/R_ext/Callbacks.h 2175 declaration
-#> 1290        Rf_asChar /usr/share/R/include/R_ext/Callbacks.h 2509 declaration
-```
 
 ## Parsing examples
 
