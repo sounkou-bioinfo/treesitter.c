@@ -40,23 +40,30 @@ tree <- parser_parse(parser, code)
 tree
 ```
 
-## Parsing R headers
 
-Parse R headers installed on this machine, without preprocessing:
+## Advanced: Preprocessing with fake libc and no standard includes
 
-```{r eval=TRUE}
-# Parse R headers installed on this machine (no preprocessing)
-hdr_df <- parse_r_include_headers(
-  dir = R.home("include"),
-  preprocess = FALSE
+You can use the `preprocess_header` function with extra compiler options to avoid system includes and use the bundled fake libc headers. This is useful for portable parsing and avoiding system-specific macros.
+
+```{r eval=FALSE}
+library(treesitter.c)
+
+# Path to a header file to preprocess
+header_file <- file.path(R.home("include"), "Rinternals.h")
+
+# Get the path to the fake libc headers
+fake_libc <- fake_libc_path()
+
+# Preprocess with -nostdinc and -I pointing to fake_libc
+preprocessed <- preprocess_header(
+  header_file,
+  ccflags = NULL,
+  "-nostdinc", paste0("-I", fake_libc)
 )
+cat(substr(preprocessed, 1, 500)) # Show first 500 chars
 ```
 
-Show the first few discovered functions matching "Rf":
-
-```{r eval=TRUE}
-hdr_df[grepl("Rf", x = hdr_df$name), ] |> head(10)
-```
+This approach ensures only the fake libc headers are used, making preprocessing more predictable and portable.
 
 If you have a C compiler available and want to preprocess macros (recommended for headers that use macros), enable `preprocess = TRUE`. Prefer to use the helper `r_cc()` to detect the compiler automatically.
 
