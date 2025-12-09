@@ -41,9 +41,9 @@ tree
 ```
 
 
-## Advanced: Preprocessing with fake libc and no standard includes
+## Preprocessing with fake libc and no standard includes
 
-You can use the `preprocess_header` function with extra compiler options to avoid system includes and use the bundled fake libc headers. This is useful for portable parsing and avoiding system-specific macros.
+You can use the `preprocess_header` function with extra compiler options to avoid system includes and use the bundled fake libc headers. This avoids system includes bloat.
 
 ```{r eval=FALSE}
 library(treesitter.c)
@@ -78,9 +78,9 @@ hdr_df_pp <- parse_r_include_headers(
 hdr_df_pp[grepl("Rf", x = hdr_df_pp$name), ] |> head(10)
 ```
 
-## API Examples
+## Parsing examples
 
-The following concise examples demonstrate extracting specific information (functions, parameters, structs, macros) using the API.
+The following concise examples demonstrate extracting specific information (functions, parameters, structs, macros) using the package's simple helpers.
 
 Simple parse and extract functions: parse a small header string and extract functions with parameter types.
 
@@ -134,3 +134,7 @@ During bootstrap (`bootstrap.R`), all `#pragma` directives are automatically rem
 ## License
 
 GPL-3
+
+## References
+
+- [On parsing c type declarations and fake headers](https://eli.thegreenplace.net/2015/on-parsing-c-type-declarations-and-fake-headers)

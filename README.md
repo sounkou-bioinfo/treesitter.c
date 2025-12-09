@@ -35,14 +35,14 @@ tree <- parser_parse(parser, code)
 tree
 #> <tree_sitter_tree>
 #> 
-#> ── Text ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── Text ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> struct Point {
 #>   int x[MAX_SIZE];
 #>   int y;
 #> };
 #> 
 #> 
-#> ── S-Expression ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── S-Expression ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> (translation_unit [(1, 0), (5, 0)]
 #>   (struct_specifier [(1, 0), (4, 1)]
 #>     "struct" [(1, 0), (1, 6)]
@@ -71,45 +71,32 @@ tree
 #> <truncated>
 ```
 
-## Parsing R headers
+## Preprocessing with fake libc and no standard includes
 
-Parse R headers installed on this machine, without preprocessing:
+You can use the `preprocess_header` function with extra compiler options
+to avoid system includes and use the bundled fake libc headers. This
+avoids system includes bloat.
 
 ``` r
-# Parse R headers installed on this machine (no preprocessing)
-hdr_df <- parse_r_include_headers(
-  dir = R.home("include"),
-  preprocess = FALSE
+library(treesitter.c)
+
+# Path to a header file to preprocess
+header_file <- file.path(R.home("include"), "Rinternals.h")
+
+# Get the path to the fake libc headers
+fake_libc <- fake_libc_path()
+
+# Preprocess with -nostdinc and -I pointing to fake_libc
+preprocessed <- preprocess_header(
+  header_file,
+  ccflags = NULL,
+  "-nostdinc", paste0("-I", fake_libc)
 )
+cat(substr(preprocessed, 1, 500)) # Show first 500 chars
 ```
 
-Show the first few discovered functions matching “Rf”:
-
-``` r
-hdr_df[grepl("Rf", x = hdr_df$name), ] |> head(10)
-#>                              name                                        file
-#> 109  Rf_removeTaskCallbackByIndex      /usr/share/R/include/R_ext/Callbacks.h
-#> 110   Rf_removeTaskCallbackByName      /usr/share/R/include/R_ext/Callbacks.h
-#> 112            Rf_addTaskCallback      /usr/share/R/include/R_ext/Callbacks.h
-#> 134                      Rf_error          /usr/share/R/include/R_ext/Error.h
-#> 137                      Rf_error          /usr/share/R/include/R_ext/Error.h
-#> 140                    Rf_warning          /usr/share/R/include/R_ext/Error.h
-#> 251                     Rf_onintr /usr/share/R/include/R_ext/GraphicsDevice.h
-#> 256                  Rf_ucstoutf8 /usr/share/R/include/R_ext/GraphicsDevice.h
-#> 1031                  S_Rf_divset  /usr/share/R/include/R_ext/stats_package.h
-#> 1037                  S_Rf_divset    /usr/share/R/include/R_ext/stats_stubs.h
-#>      line        kind
-#> 109    66 declaration
-#> 110    67 declaration
-#> 112    69 declaration
-#> 134    58 declaration
-#> 137    63     unknown
-#> 140    69     unknown
-#> 251   979 declaration
-#> 256   990 declaration
-#> 1031   56 declaration
-#> 1037   41  definition
-```
+This approach ensures only the fake libc headers are used, making
+preprocessing more predictable and portable.
 
 If you have a C compiler available and want to preprocess macros
 (recommended for headers that use macros), enable `preprocess = TRUE`.
@@ -137,10 +124,11 @@ hdr_df_pp[grepl("Rf", x = hdr_df_pp$name), ] |> head(10)
 #> 1367        Rf_isNull /usr/share/R/include/R_ext/Callbacks.h 2285 declaration
 ```
 
-## API Examples
+## Parsing examples
 
 The following concise examples demonstrate extracting specific
-information (functions, parameters, structs, macros) using the API.
+information (functions, parameters, structs, macros) using the package’s
+simple helpers.
 
 Simple parse and extract functions: parse a small header string and
 extract functions with parameter types.
@@ -230,3 +218,8 @@ are not portable across compilers.
 ## License
 
 GPL-3
+
+## References
+
+  - [On parsing c type declarations and fake
+    headers](https://eli.thegreenplace.net/2015/on-parsing-c-type-declarations-and-fake-headers)
