@@ -1,4 +1,5 @@
 ## Parse helpers for C header parsing (main doc moved to `parse_r_include_headers`)
+
 #' Return the default R-configured C compiler (possibly with flags)
 #'
 #' This function queries common places to find the C compiler used by R.
@@ -121,11 +122,6 @@ preprocess_header <- function(file, cc = r_cc(), ccflags = NULL, ...) {
   if (!nzchar(cc_prog)) {
     stop("No C compiler configured; set `cc`")
   }
-  # Check if compiler exists
-  cc_path <- Sys.which(cc_prog)
-  if (!nzchar(cc_path)) {
-    stop(sprintf("C compiler '%s' not found in PATH. Please check your configuration.", cc_prog))
-  }
 
   if (is.null(ccflags) || !nzchar(ccflags)) {
     ccflags <- r_ccflags()
@@ -136,24 +132,12 @@ preprocess_header <- function(file, cc = r_cc(), ccflags = NULL, ...) {
     character(0)
   }
   args <- c(cc_prog_args, flags, "-E", file, ...)
-  # Print command for debugging if env var is set
-  if (identical(Sys.getenv("TS_C_DEBUG"), "1")) {
-    message(sprintf("Running: %s %s", cc_prog, paste(shQuote(args), collapse = " ")))
-  }
   preprocessed <- tryCatch(
     suppressWarnings(system2(cc_prog, args, stdout = TRUE, stderr = TRUE)),
-    error = function(e) {
-      stop(sprintf(
-        "Failed to run preprocessor: %s\nCompiler: %s\nArgs: %s\nError: %s",
-        file, cc_prog, paste(args, collapse = " "), e$message
-      ))
-    }
+    error = function(e) stop("Failed to run preprocessor: ", e$message)
   )
   if (is.null(preprocessed) || length(preprocessed) == 0) {
-    stop(sprintf(
-      "Failed to run preprocessor for: %s\nCompiler: %s\nArgs: %s\nOutput was empty or NULL.",
-      file, cc_prog, paste(args, collapse = " ")
-    ))
+    stop("Failed to run preprocessor for: ", file)
   }
   paste(preprocessed, collapse = "\n")
 }
