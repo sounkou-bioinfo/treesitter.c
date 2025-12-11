@@ -162,13 +162,14 @@ make_c_for_struct <- function(s, prefix) {
     body
 }
 
+
+
 #' Generate minimal C bindings from C headers
 #'
 #' Generic generator: prefixes generated symbols using `pkgname` so the
 #' output is safe to compile alongside existing example sources. It returns
 #' the generated C path and a suggested `PKG_CPPFLAGS` value when
 #' `include_dirs` is provided.
-#'
 #' @param headers Character vector of header file paths, or a single directory containing headers.
 #' @param out_c Path to write generated C file.
 #' @param mode One of "inline" or "package".

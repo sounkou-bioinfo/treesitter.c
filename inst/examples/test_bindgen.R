@@ -4,15 +4,8 @@
 # 3. Load shared object and run simple checks
 
 ## Prefer loading the package with devtools/pkgload rather than sourcing files.
-if (requireNamespace("devtools", quietly = TRUE)) {
-    devtools::load_all(".")
-} else if (requireNamespace("pkgload", quietly = TRUE)) {
-    pkgload::load_all(".")
-} else {
-    # fallback for environments without devtools/pkgload
-    message("devtools/pkgload not available; sourcing generator directly")
-    source("R/generate_bindings.R")
-}
+devtools::load_all(".")
+
 
 hdrs <- list.files("inst/examples/headers", full.names = TRUE, pattern = "\\.(h|hpp)$")
 cat("Headers to parse:\n")
