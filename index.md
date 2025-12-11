@@ -107,7 +107,6 @@ to avoid system includes and use the bundled fake libc headers. This
 avoids system includes bloat.
 
 ``` r
-library(treesitter.c)
 
 # Path to a header file to preprocess
 header_file <- file.path(R.home("include"), "Rinternals.h")

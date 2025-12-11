@@ -147,8 +147,7 @@
 <span><span class="co">#&gt; 1557        Rf_asChar /usr/share/R/include/R_ext/Callbacks.h 2922 declaration</span></span></code></pre></div>
 <p>You can use the <code>preprocess_header</code> function with extra compiler options to avoid system includes and use the bundled fake libc headers. This avoids system includes bloat.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sounkou-bioinfo.github.io/treesitter.c/">treesitter.c</a></span><span class="op">)</span></span>
-<span></span>
+<code class="sourceCode R"><span></span>
 <span><span class="co"># Path to a header file to preprocess</span></span>
 <span><span class="va">header_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home</a></span><span class="op">(</span><span class="st">"include"</span><span class="op">)</span>, <span class="st">"Rinternals.h"</span><span class="op">)</span></span>
 <span></span>
