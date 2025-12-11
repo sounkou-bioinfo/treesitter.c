@@ -85,24 +85,24 @@ r_ccflags <- function() {
 #' @param file Path to a header file to preprocess.
 #' @param cc (Character) Compiler command to use. If `NULL`, resolved via `r_cc()`.
 #' @param ccflags (Character) Additional flags to pass to the compiler.
-#' @inheritDotParams preprocess_headers
+#' @param ... Additional arguments passed to underlying functions.
 #' @return Character scalar with the preprocessed output of `file`.
 #' @examples
 #' \dontrun{
 #' # Check for a compiler before running an example that invokes the preprocessor
 #' rcc <- treesitter.c::r_cc()
 #' if (nzchar(rcc)) {
-#'     rcc_prog <- strsplit(rcc, "\\s+")[[1]][1]
-#'     if (nzchar(Sys.which(rcc_prog))) {
-#'         tmp <- tempfile("hdr3")
-#'         dir.create(tmp)
-#'         path <- file.path(tmp, "p.h")
-#'         writeLines(c("#define TYPE int", "TYPE foo(TYPE x);"), path)
-#'         out <- preprocess_header(path)
-#'         grepl("int foo\\(", out)
-#'     } else {
-#'         message("Skipping preprocess example: compiler not found on PATH")
-#'     }
+#'   rcc_prog <- strsplit(rcc, "\\s+")[[1]][1]
+#'   if (nzchar(Sys.which(rcc_prog))) {
+#'     tmp <- tempfile("hdr3")
+#'     dir.create(tmp)
+#'     path <- file.path(tmp, "p.h")
+#'     writeLines(c("#define TYPE int", "TYPE foo(TYPE x);"), path)
+#'     out <- preprocess_header(path)
+#'     grepl("int foo\\(", out)
+#'   } else {
+#'     message("Skipping preprocess example: compiler not found on PATH")
+#'   }
 #' }
 #' }
 #' @export
@@ -154,7 +154,7 @@ preprocess_header <- function(file, cc = r_cc(), ccflags = NULL, ...) {
 #' @param pattern File name pattern(s) used to identify header files.
 #' @param cc Compiler string; passed to `preprocess_header`.
 #' @param ccflags Compiler flags; passed to `preprocess_header`.
-#' @inheritDotParams parse_r_include_headers
+#' @param ... Additional arguments passed to underlying functions.
 #' @return Named list of file => preprocessed text.
 #' @export
 preprocess_headers <- function(
@@ -190,8 +190,8 @@ preprocess_headers <- function(
 #' @return The tree root node object
 #' @examples
 #' if (requireNamespace("treesitter", quietly = TRUE)) {
-#'     root <- parse_header_text("int foo(int);\n")
-#'     root
+#'   root <- parse_header_text("int foo(int);\n")
+#'   root
 #' }
 #' @export
 parse_header_text <- function(text, lang = language()) {
@@ -1072,19 +1072,19 @@ get_defines_from_file <- function(
 #' @param ccflags Extra flags to pass to the compiler when preprocessing.
 #'   If `NULL` flags are taken from `R CMD config CFLAGS` and `R CMD config CPPFLAGS`.
 #' @param include_dirs Additional directories to add to the include path for preprocessing. A character vector of directories.
-#' @inheritDotParams parse_headers_collect
+#' @param ... Additional arguments passed to underlying functions.
 #' @return A data frame with columns `name`, `file`, `line`, and `kind`
 #'   (either 'declaration' or 'definition').
 #' @examples
 #' if (requireNamespace("treesitter", quietly = TRUE)) {
-#'     # Parse a small header file from a temp dir
-#'     tmp <- tempdir()
-#'     path <- file.path(tmp, "example.h")
-#'     writeLines(c(
-#'         "int foo(int a);",
-#'         "static inline int bar(void) { return 1; }"
-#'     ), path)
-#'     parse_r_include_headers(dir = tmp)
+#'   # Parse a small header file from a temp dir
+#'   tmp <- tempdir()
+#'   path <- file.path(tmp, "example.h")
+#'   writeLines(c(
+#'     "int foo(int a);",
+#'     "static inline int bar(void) { return 1; }"
+#'   ), path)
+#'   parse_r_include_headers(dir = tmp)
 #' }
 #' @export
 parse_r_include_headers <- function(
@@ -1285,8 +1285,8 @@ parse_r_include_headers <- function(
 #' @examples
 #' \dontrun{
 #' if (requireNamespace("treesitter", quietly = TRUE)) {
-#'     res <- parse_headers_collect(dir = R.home("include"), preprocess = FALSE)
-#'     head(res$functions)
+#'   res <- parse_headers_collect(dir = R.home("include"), preprocess = FALSE)
+#'   head(res$functions)
 #' }
 #' }
 #' @export
