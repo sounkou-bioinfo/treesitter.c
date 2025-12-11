@@ -7,10 +7,13 @@
 ^\.gitignore$
 ^bootstrap\.R$
 ^tree-sitter-c$
-\.o$
-\.so$
+src/\.o$
+src/\.so$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
 ^\.github$
 ^Makefile$
+^\.lintr$
+^\.Rhistory$
+^fake_libc\.R$

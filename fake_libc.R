@@ -3,7 +3,7 @@
 #' This script downloads the pycparser release, extracts the fake_libc_include directory,
 #' and copies its contents to inst/fake_libc. It also adds copyright info for Eli Bendersky and Co-authors.
 #'
-#' Usage: source('fake_libc.R')
+#' Usage: Rscript fake_libc.R
 
 url <- "https://github.com/eliben/pycparser/archive/refs/tags/release_v2.23.tar.gz"
 tmpfile <- tempfile("pycparser", fileext = ".tar.gz")

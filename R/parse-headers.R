@@ -1119,8 +1119,9 @@ parse_r_include_headers <- function(
       kind = character(0)
     ))
   }
-  out <- list()
-  for (f in files) {
+
+  # Helper function to process a single header file
+  process_single_header <- function(f) {
     flags <- if (is.null(ccflags) || !nzchar(ccflags)) {
       r_ccflags()
     } else {
@@ -1196,15 +1197,11 @@ parse_r_include_headers <- function(
             )
           }
         }
-        if (length(fb) > 0) {
-          for (it in fb) {
-            out[[length(out) + 1L]] <- it
-          }
-          next
-        }
+        return(fb)
       }
     }
     if (!is.null(funcs) && is.data.frame(funcs) && nrow(funcs) > 0) {
+      res <- list()
       for (i in seq_len(nrow(funcs))) {
         cn <- funcs$capture_name[i]
         name <- funcs$text[i]
@@ -1216,15 +1213,29 @@ parse_r_include_headers <- function(
         } else {
           "unknown"
         }
-        out[[length(out) + 1L]] <- list(
+        res[[length(res) + 1]] <- list(
           name = name,
           file = f,
           line = line,
           kind = kind
         )
       }
+      return(res)
     }
+    list()
   }
+
+  # Process files in parallel if parallel package is available
+  out <- if (requireNamespace("parallel", quietly = TRUE)) {
+    unlist(parallel::mclapply(files, process_single_header), recursive = FALSE)
+  } else {
+    out <- list()
+    for (f in files) {
+      out <- c(out, process_single_header(f))
+    }
+    out
+  }
+
   if (length(out) == 0L) {
     return(data.frame(
       name = character(0),
@@ -1279,6 +1290,107 @@ parse_r_include_headers <- function(
 #' }
 #' }
 #' @export
+# Helper function for parallel processing in parse_headers_collect
+process_single_header_collect <- function(f, preprocess, cc, ccflags, include_dirs, extract_params, extract_return, ...) {
+  flags <- if (is.null(ccflags) || !nzchar(ccflags)) {
+    r_ccflags()
+  } else {
+    ccflags
+  }
+  content <- if (preprocess) {
+    extra <- c(paste0("-I", dirname(f)))
+    if (!is.null(include_dirs)) {
+      extra <- c(extra, paste0("-I", include_dirs))
+    }
+    preprocess_header(
+      f,
+      cc = cc,
+      ccflags = paste(ccflags, paste(extra, collapse = " ")),
+      ...
+    )
+  } else {
+    paste(readLines(f, warn = FALSE), collapse = "\n")
+  }
+  root <- tryCatch(parse_header_text(content), error = function(e) NULL)
+  if (is.null(root)) {
+    return(list(
+      functions = data.frame(),
+      structs = data.frame(),
+      struct_members = data.frame(),
+      enums = data.frame(),
+      unions = data.frame(),
+      globals = data.frame(),
+      defines = character(0)
+    ))
+  }
+  funcs <- tryCatch(
+    get_function_nodes(
+      root,
+      extract_params = extract_params,
+      extract_return = extract_return
+    ),
+    error = function(e) NULL
+  )
+  func_df <- if (!is.null(funcs) && nrow(funcs) > 0) {
+    df <- data.frame(file = f, funcs)
+    if ("text" %in% colnames(df)) {
+      df$name <- df$text
+      df$text <- NULL
+    }
+    df
+  } else {
+    data.frame()
+  }
+  structs <- tryCatch(get_struct_nodes(root), error = function(e) NULL)
+  struct_df <- if (!is.null(structs) && nrow(structs) > 0) {
+    cbind(file = f, structs)
+  } else {
+    data.frame()
+  }
+  members <- tryCatch(get_struct_members(root), error = function(e) NULL)
+  member_df <- if (!is.null(members) && nrow(members) > 0) {
+    cbind(file = f, members)
+  } else {
+    data.frame()
+  }
+  enums <- tryCatch(get_enum_nodes(root), error = function(e) NULL)
+  enum_df <- if (!is.null(enums) && nrow(enums) > 0) {
+    cbind(file = f, enums)
+  } else {
+    data.frame()
+  }
+  unions <- tryCatch(get_union_nodes(root), error = function(e) NULL)
+  union_df <- if (!is.null(unions) && nrow(unions) > 0) {
+    cbind(file = f, unions)
+  } else {
+    data.frame()
+  }
+  globals <- tryCatch(get_globals_from_root(root), error = function(e) NULL)
+  global_df <- if (!is.null(globals) && nrow(globals) > 0) {
+    cbind(file = f, globals)
+  } else {
+    data.frame()
+  }
+  defs <- tryCatch(
+    get_defines_from_file(
+      f,
+      use_cpp = preprocess,
+      cc = cc,
+      ccflags = ccflags
+    ),
+    error = function(e) character(0)
+  )
+  list(
+    functions = func_df,
+    structs = struct_df,
+    struct_members = member_df,
+    enums = enum_df,
+    unions = union_df,
+    globals = global_df,
+    defines = defs
+  )
+}
+
 parse_headers_collect <- function(
   dir = R.home("include"),
   recursive = TRUE,
@@ -1343,6 +1455,11 @@ parse_headers_collect <- function(
     )
     return(out)
   }
+  results <- if (requireNamespace("parallel", quietly = TRUE)) {
+    parallel::mclapply(files, process_single_header_collect, preprocess = preprocess, cc = cc, ccflags = ccflags, include_dirs = include_dirs, extract_params = extract_params, extract_return = extract_return, ...)
+  } else {
+    lapply(files, process_single_header_collect, preprocess = preprocess, cc = cc, ccflags = ccflags, include_dirs = include_dirs, extract_params = extract_params, extract_return = extract_return, ...)
+  }
   agg <- list(
     functions = list(),
     structs = list(),
@@ -1352,82 +1469,14 @@ parse_headers_collect <- function(
     globals = list(),
     defines = character(0)
   )
-  for (f in files) {
-    flags <- if (is.null(ccflags) || !nzchar(ccflags)) {
-      r_ccflags()
-    } else {
-      ccflags
-    }
-    content <- if (preprocess) {
-      extra <- c(paste0("-I", dirname(f)))
-      if (!is.null(include_dirs)) {
-        extra <- c(extra, paste0("-I", include_dirs))
-      }
-      preprocess_header(
-        f,
-        cc = cc,
-        ccflags = paste(ccflags, paste(extra, collapse = " ")),
-        ...
-      )
-    } else {
-      paste(readLines(f, warn = FALSE), collapse = "\n")
-    }
-    root <- tryCatch(parse_header_text(content), error = function(e) NULL)
-    if (is.null(root)) {
-      next
-    }
-    funcs <- tryCatch(
-      get_function_nodes(
-        root,
-        extract_params = extract_params,
-        extract_return = extract_return
-      ),
-      error = function(e) NULL
-    )
-    if (!is.null(funcs) && nrow(funcs) > 0) {
-      func_df <- data.frame(file = f, funcs)
-      # Rename 'text' column from get_function_nodes to 'name' for convenience
-      if ("text" %in% colnames(func_df)) {
-        func_df$name <- func_df$text
-        func_df$text <- NULL
-      }
-      agg$functions[[length(agg$functions) + 1]] <- func_df
-    }
-    structs <- tryCatch(get_struct_nodes(root), error = function(e) NULL)
-    if (!is.null(structs) && nrow(structs) > 0) {
-      agg$structs[[length(agg$structs) + 1]] <- cbind(file = f, structs)
-    }
-    members <- tryCatch(get_struct_members(root), error = function(e) NULL)
-    if (!is.null(members) && nrow(members) > 0) {
-      agg$struct_members[[length(agg$struct_members) + 1]] <- cbind(
-        file = f,
-        members
-      )
-    }
-    enums <- tryCatch(get_enum_nodes(root), error = function(e) NULL)
-    if (!is.null(enums) && nrow(enums) > 0) {
-      agg$enums[[length(agg$enums) + 1]] <- cbind(file = f, enums)
-    }
-    unions <- tryCatch(get_union_nodes(root), error = function(e) NULL)
-    if (!is.null(unions) && nrow(unions) > 0) {
-      agg$unions[[length(agg$unions) + 1]] <- cbind(file = f, unions)
-    }
-    globals <- tryCatch(get_globals_from_root(root), error = function(e) {
-      NULL
-    })
-    if (!is.null(globals) && nrow(globals) > 0) {
-      agg$globals[[length(agg$globals) + 1]] <- cbind(file = f, globals)
-    }
-    defs <- tryCatch(
-      get_defines_from_file(
-        f,
-        use_cpp = preprocess,
-        cc = cc,
-        ccflags = ccflags
-      ),
-      error = function(e) character(0)
-    )
-    if (length(defs) > 0) agg$defines <- unique(c(agg$defines, defs))
+  for (res in results) {
+    if (nrow(res$functions) > 0) agg$functions <- c(agg$functions, list(res$functions))
+    if (nrow(res$structs) > 0) agg$structs <- c(agg$structs, list(res$structs))
+    if (nrow(res$struct_members) > 0) agg$struct_members <- c(agg$struct_members, list(res$struct_members))
+    if (nrow(res$enums) > 0) agg$enums <- c(agg$enums, list(res$enums))
+    if (nrow(res$unions) > 0) agg$unions <- c(agg$unions, list(res$unions))
+    if (nrow(res$globals) > 0) agg$globals <- c(agg$globals, list(res$globals))
+    agg$defines <- unique(c(agg$defines, res$defines))
   }
   out_list <- list(
     functions = if (length(agg$functions) > 0) {

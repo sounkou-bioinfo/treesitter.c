@@ -10,3 +10,7 @@ src/*.so
 tree-sitter-c/
 README.html
 docs
+
+# Ignore compiled example shared objects and build outputs in inst/examples
+inst/examples/*.so
+inst/examples/*.o
