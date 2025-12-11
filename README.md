@@ -2,7 +2,8 @@
 [![treesitter.c status
 badge](https://sounkou-bioinfo.r-universe.dev/treesitter.c/badges/version)](https://sounkou-bioinfo.r-universe.dev/treesitter.c)
 [![CRAN](https://www.r-pkg.org/badges/version/treesitter.c)](https://CRAN.R-project.org/package=treesitter.c)
-\# treesitter.c
+
+# treesitter.c
 
 C grammar for the R treesitter package.
 
