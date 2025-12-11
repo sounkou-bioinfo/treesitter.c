@@ -1,12 +1,16 @@
-# treesitter.c
+[![treesitter.c status
+badge](https://sounkou-bioinfo.r-universe.dev/treesitter.c/badges/version)](https://sounkou-bioinfo.r-universe.dev/treesitter.c)
+[](https://CRAN.R-project.org/package=treesitter.c) \# treesitter.c
 
 C grammar for the R treesitter package.
 
 ## Installation
 
 ``` r
-# Install treesitter.c from GitHub
-remotes::install_git("https://github.com/sounkou-bioinfo/treesitter.c")
+# Install  the development version of treesitter.c from r-universe
+install.packages('treesitter.c', repos = c('https://sounkou-bioinfo.r-universe.dev', 'https://cloud.r-project.org'))
+# or the cran release
+install.packages('treesitter.c', repos = 'https://cloud.r-project.org')
 ```
 
 ## Usage
@@ -34,14 +38,14 @@ tree <- parser_parse(parser, code)
 tree
 #> <tree_sitter_tree>
 #> 
-#> ── Text ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── Text ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> struct Point {
 #>   int x[MAX_SIZE];
 #>   int y;
 #> };
 #> 
 #> 
-#> ── S-Expression ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── S-Expression ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> (translation_unit [(1, 0), (5, 0)]
 #>   (struct_specifier [(1, 0), (4, 1)]
 #>     "struct" [(1, 0), (1, 6)]
@@ -76,7 +80,7 @@ If you have a C compiler available and want to preprocess macros
 (recommended for headers that use macros), enable `preprocess = TRUE`.
 Prefer to use the helper
 [`r_cc()`](https://sounkou-bioinfo.github.io/treesitter.c/reference/r_cc.md)
-to detect the compiler automatically.
+to detect the compiler automatically
 
 ``` r
 # Check for a compiler and use include_dirs so the preprocessor can find nested headers
@@ -88,16 +92,16 @@ hdr_df_pp <- parse_r_include_headers(
   )
 hdr_df_pp[grepl("Rf", x = hdr_df_pp$name), ] |> head(10)
 #>                  name                                   file line        kind
-#> 1216         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2109 declaration
-#> 1219       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2115 declaration
-#> 1228       Rf_revsort /usr/share/R/include/R_ext/Callbacks.h 2154 declaration
-#> 1229        Rf_iPsort /usr/share/R/include/R_ext/Callbacks.h 2155 declaration
-#> 1230        Rf_rPsort /usr/share/R/include/R_ext/Callbacks.h 2156 declaration
-#> 1231        Rf_cPsort /usr/share/R/include/R_ext/Callbacks.h 2157 declaration
-#> 1236   Rf_StringFalse /usr/share/R/include/R_ext/Callbacks.h 2173 declaration
-#> 1237    Rf_StringTrue /usr/share/R/include/R_ext/Callbacks.h 2174 declaration
-#> 1238 Rf_isBlankString /usr/share/R/include/R_ext/Callbacks.h 2175 declaration
-#> 1290        Rf_asChar /usr/share/R/include/R_ext/Callbacks.h 2509 declaration
+#> 1483         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2522 declaration
+#> 1486       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2528 declaration
+#> 1495       Rf_revsort /usr/share/R/include/R_ext/Callbacks.h 2567 declaration
+#> 1496        Rf_iPsort /usr/share/R/include/R_ext/Callbacks.h 2568 declaration
+#> 1497        Rf_rPsort /usr/share/R/include/R_ext/Callbacks.h 2569 declaration
+#> 1498        Rf_cPsort /usr/share/R/include/R_ext/Callbacks.h 2570 declaration
+#> 1503   Rf_StringFalse /usr/share/R/include/R_ext/Callbacks.h 2586 declaration
+#> 1504    Rf_StringTrue /usr/share/R/include/R_ext/Callbacks.h 2587 declaration
+#> 1505 Rf_isBlankString /usr/share/R/include/R_ext/Callbacks.h 2588 declaration
+#> 1557        Rf_asChar /usr/share/R/include/R_ext/Callbacks.h 2922 declaration
 ```
 
 You can use the `preprocess_header` function with extra compiler options
@@ -214,8 +218,9 @@ head(res$functions)
 path <- file.path(R.home("include"), "Rembedded.h")
 defs <- get_defines_from_file(path, use_cpp = TRUE, ccflags = paste("-I", dirname(path)))
   head(defs)
-#> [1] "__SSP_STRONG__"        "__DBL_MIN_EXP__"       "__UINT_LEAST16_MAX__" 
-#> [4] "_STDBOOL_H"            "__ATOMIC_ACQUIRE"      "__FLT128_MAX_10_EXP__"
+#> [1] "__DBL_MIN_EXP__"         "__UINT_LEAST16_MAX__"   
+#> [3] "_STDBOOL_H"              "__FLT16_HAS_QUIET_NAN__"
+#> [5] "__ATOMIC_ACQUIRE"        "__FLT128_MAX_10_EXP__"
 ```
 
 ## Details On the Used Grammar

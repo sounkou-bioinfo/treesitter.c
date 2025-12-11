@@ -46,16 +46,16 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="treesitterc">treesitter.c<a class="anchor" aria-label="anchor" href="#treesitterc"></a>
-</h1></div>
+  <main id="main" class="col-md-9"><p><a href="https://sounkou-bioinfo.r-universe.dev/treesitter.c" class="external-link"><img src="https://sounkou-bioinfo.r-universe.dev/treesitter.c/badges/version" alt="treesitter.c status badge"></a> <a href="https://CRAN.R-project.org/package=treesitter.c" class="external-link"><embed src="https://www.r-pkg.org/badges/version/treesitter.c"></embed></a> # treesitter.c</p>
 <p>C grammar for the R treesitter package.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Install treesitter.c from GitHub</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_git</span><span class="op">(</span><span class="st">"https://github.com/sounkou-bioinfo/treesitter.c"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Install  the development version of treesitter.c from r-universe</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'treesitter.c'</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'https://sounkou-bioinfo.r-universe.dev'</span>, <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># or the cran release</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'treesitter.c'</span>, repos <span class="op">=</span> <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
@@ -83,14 +83,14 @@
 <span><span class="va">tree</span></span>
 <span><span class="co">#&gt; &lt;tree_sitter_tree&gt;</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Text ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; ── Text ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; struct Point {</span></span>
 <span><span class="co">#&gt;   int x[MAX_SIZE];</span></span>
 <span><span class="co">#&gt;   int y;</span></span>
 <span><span class="co">#&gt; };</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── S-Expression ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; ── S-Expression ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; (translation_unit [(1, 0), (5, 0)]</span></span>
 <span><span class="co">#&gt;   (struct_specifier [(1, 0), (4, 1)]</span></span>
 <span><span class="co">#&gt;     "struct" [(1, 0), (1, 6)]</span></span>
@@ -121,7 +121,7 @@
 <div class="section level2">
 <h2 id="preprocessing-and-header-parsing">Preprocessing and header parsing<a class="anchor" aria-label="anchor" href="#preprocessing-and-header-parsing"></a>
 </h2>
-<p>If you have a C compiler available and want to preprocess macros (recommended for headers that use macros), enable <code>preprocess = TRUE</code>. Prefer to use the helper <code><a href="reference/r_cc.html">r_cc()</a></code> to detect the compiler automatically.</p>
+<p>If you have a C compiler available and want to preprocess macros (recommended for headers that use macros), enable <code>preprocess = TRUE</code>. Prefer to use the helper <code><a href="reference/r_cc.html">r_cc()</a></code> to detect the compiler automatically</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check for a compiler and use include_dirs so the preprocessor can find nested headers</span></span>
 <span><span class="va">cc</span> <span class="op">&lt;-</span> <span class="fu">treesitter.c</span><span class="fu">::</span><span class="fu"><a href="reference/r_cc.html">r_cc</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -132,16 +132,16 @@
 <span>  <span class="op">)</span></span>
 <span><span class="va">hdr_df_pp</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Rf"</span>, x <span class="op">=</span> <span class="va">hdr_df_pp</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>, <span class="op">]</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                  name                                   file line        kind</span></span>
-<span><span class="co">#&gt; 1216         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2109 declaration</span></span>
-<span><span class="co">#&gt; 1219       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2115 declaration</span></span>
-<span><span class="co">#&gt; 1228       Rf_revsort /usr/share/R/include/R_ext/Callbacks.h 2154 declaration</span></span>
-<span><span class="co">#&gt; 1229        Rf_iPsort /usr/share/R/include/R_ext/Callbacks.h 2155 declaration</span></span>
-<span><span class="co">#&gt; 1230        Rf_rPsort /usr/share/R/include/R_ext/Callbacks.h 2156 declaration</span></span>
-<span><span class="co">#&gt; 1231        Rf_cPsort /usr/share/R/include/R_ext/Callbacks.h 2157 declaration</span></span>
-<span><span class="co">#&gt; 1236   Rf_StringFalse /usr/share/R/include/R_ext/Callbacks.h 2173 declaration</span></span>
-<span><span class="co">#&gt; 1237    Rf_StringTrue /usr/share/R/include/R_ext/Callbacks.h 2174 declaration</span></span>
-<span><span class="co">#&gt; 1238 Rf_isBlankString /usr/share/R/include/R_ext/Callbacks.h 2175 declaration</span></span>
-<span><span class="co">#&gt; 1290        Rf_asChar /usr/share/R/include/R_ext/Callbacks.h 2509 declaration</span></span></code></pre></div>
+<span><span class="co">#&gt; 1483         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2522 declaration</span></span>
+<span><span class="co">#&gt; 1486       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2528 declaration</span></span>
+<span><span class="co">#&gt; 1495       Rf_revsort /usr/share/R/include/R_ext/Callbacks.h 2567 declaration</span></span>
+<span><span class="co">#&gt; 1496        Rf_iPsort /usr/share/R/include/R_ext/Callbacks.h 2568 declaration</span></span>
+<span><span class="co">#&gt; 1497        Rf_rPsort /usr/share/R/include/R_ext/Callbacks.h 2569 declaration</span></span>
+<span><span class="co">#&gt; 1498        Rf_cPsort /usr/share/R/include/R_ext/Callbacks.h 2570 declaration</span></span>
+<span><span class="co">#&gt; 1503   Rf_StringFalse /usr/share/R/include/R_ext/Callbacks.h 2586 declaration</span></span>
+<span><span class="co">#&gt; 1504    Rf_StringTrue /usr/share/R/include/R_ext/Callbacks.h 2587 declaration</span></span>
+<span><span class="co">#&gt; 1505 Rf_isBlankString /usr/share/R/include/R_ext/Callbacks.h 2588 declaration</span></span>
+<span><span class="co">#&gt; 1557        Rf_asChar /usr/share/R/include/R_ext/Callbacks.h 2922 declaration</span></span></code></pre></div>
 <p>You can use the <code>preprocess_header</code> function with extra compiler options to avoid system includes and use the bundled fake libc headers. This avoids system includes bloat.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sounkou-bioinfo.github.io/treesitter.c/">treesitter.c</a></span><span class="op">)</span></span>
@@ -237,8 +237,9 @@
 <span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home</a></span><span class="op">(</span><span class="st">"include"</span><span class="op">)</span>, <span class="st">"Rembedded.h"</span><span class="op">)</span></span>
 <span><span class="va">defs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_defines_from_file.html">get_defines_from_file</a></span><span class="op">(</span><span class="va">path</span>, use_cpp <span class="op">=</span> <span class="cn">TRUE</span>, ccflags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"-I"</span>, <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">defs</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "__SSP_STRONG__"        "__DBL_MIN_EXP__"       "__UINT_LEAST16_MAX__" </span></span>
-<span><span class="co">#&gt; [4] "_STDBOOL_H"            "__ATOMIC_ACQUIRE"      "__FLT128_MAX_10_EXP__"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "__DBL_MIN_EXP__"         "__UINT_LEAST16_MAX__"   </span></span>
+<span><span class="co">#&gt; [3] "_STDBOOL_H"              "__FLT16_HAS_QUIET_NAN__"</span></span>
+<span><span class="co">#&gt; [5] "__ATOMIC_ACQUIRE"        "__FLT128_MAX_10_EXP__"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="details-on-the-used-grammar">Details On the Used Grammar<a class="anchor" aria-label="anchor" href="#details-on-the-used-grammar"></a>
@@ -258,10 +259,11 @@
 <li><a href="https://eli.thegreenplace.net/2015/on-parsing-c-type-declarations-and-fake-headers" class="external-link">On parsing c type declarations and fake headers</a></li>
 </ul>
 </div>
-</div>
+
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=treesitter.c" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/sounkou-bioinfo/treesitter.c/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/sounkou-bioinfo/treesitter.c/issues" class="external-link">Report a bug</a></li>
 </ul>

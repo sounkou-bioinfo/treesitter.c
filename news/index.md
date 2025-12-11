@@ -10,4 +10,6 @@
 
 ## treesitter.c 0.0.1 (CRAN Submission)
 
+CRAN release: 2025-12-10
+
 Initial CRAN submission
