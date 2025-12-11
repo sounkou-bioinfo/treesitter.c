@@ -9,7 +9,8 @@ knitr::opts_chunk$set(
   out.width = "100%"
 )
 ```
-
+[![treesitter.c status badge](https://sounkou-bioinfo.r-universe.dev/treesitter.c/badges/version)](https://sounkou-bioinfo.r-universe.dev/treesitter.c)
+[![CRAN](https://www.r-pkg.org/badges/version/treesitter.c)](https://CRAN.R-project.org/package=treesitter.c)
 # treesitter.c
 
 C grammar for the R treesitter package.
@@ -17,8 +18,10 @@ C grammar for the R treesitter package.
 ## Installation
 
 ```{r eval=FALSE}
-# Install treesitter.c from GitHub
-remotes::install_git("https://github.com/sounkou-bioinfo/treesitter.c")
+# Install  the development version of treesitter.c from r-universe
+install.packages('treesitter.c', repos = c('https://sounkou-bioinfo.r-universe.dev', 'https://cloud.r-project.org'))
+# or the cran release
+install.packages('treesitter.c', repos = 'https://cloud.r-project.org')
 ```
 
 ## Usage
