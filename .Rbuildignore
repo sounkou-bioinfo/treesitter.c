@@ -14,3 +14,8 @@
 ^pkgdown$
 ^\.github$
 ^Makefile$
+^fake_libc\.R$
+^tree*tar\.gz$
+^treesitter.c.check/.*$
+^\.lintr$
+^.*llm.txt$

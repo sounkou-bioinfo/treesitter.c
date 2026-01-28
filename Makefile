@@ -34,8 +34,8 @@ clean:
 dev-install:
 	R CMD INSTALL --preclean .
 
-test:
-	R -e 'devtools::test()'
+dev-test: dev-install
+	R -e 'library(treesitter.c); tinytest::test_package("treesitter.c")'
 
 rdm: dev-install
 	R -e "rmarkdown::render('README.Rmd')"

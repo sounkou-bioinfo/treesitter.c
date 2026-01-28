@@ -16,14 +16,14 @@ message("Extracting archive...\n")
 untar(tmpfile, exdir = tmpdir)
 
 src_dir <- file.path(
-    tmpdir,
-    "pycparser-release_v2.23",
-    "utils",
-    "fake_libc_include"
+  tmpdir,
+  "pycparser-release_v2.23",
+  "utils",
+  "fake_libc_include"
 )
 dest_dir <- file.path("inst", "fake_libc")
 if (!dir.exists(dest_dir)) {
-    dir.create(dest_dir, recursive = TRUE)
+  dir.create(dest_dir, recursive = TRUE)
 }
 
 message("Copying fake_libc_include files...\n")

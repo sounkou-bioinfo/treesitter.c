@@ -5,5 +5,5 @@
 #' @return Character scalar with the path to fake_libc headers
 #' @export
 fake_libc_path <- function() {
-    normalizePath(system.file("fake_libc", package = "treesitter.c"))
+  normalizePath(system.file("fake_libc", package = "treesitter.c"))
 }
