@@ -1,7 +1,7 @@
 
 Package: treesitter.c
 Title: 'R' Bindings to the 'C' Grammar for Tree-Sitter
-Version: 0.0.2.9000
+Version: 0.0.3
 Authors@R: c(
     person(given = "Sounkou Mahamane", family = "Toure", email = "sounkoutoure@gmail.com", role = c("aut", "cre")),
     person("Tree-sitter authors", role = "cph", comment = "Tree-sitter C grammar"),
