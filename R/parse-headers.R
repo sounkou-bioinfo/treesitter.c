@@ -92,17 +92,17 @@ r_ccflags <- function() {
 #' # Check for a compiler before running an example that invokes the preprocessor
 #' rcc <- treesitter.c::r_cc()
 #' if (nzchar(rcc)) {
-#'     rcc_prog <- strsplit(rcc, "\\s+")[[1]][1]
-#'     if (nzchar(Sys.which(rcc_prog))) {
-#'         tmp <- tempfile("hdr3")
-#'         dir.create(tmp)
-#'         path <- file.path(tmp, "p.h")
-#'         writeLines(c("#define TYPE int", "TYPE foo(TYPE x);"), path)
-#'         out <- preprocess_header(path)
-#'         grepl("int foo\\(", out)
-#'     } else {
-#'         message("Skipping preprocess example: compiler not found on PATH")
-#'     }
+#'   rcc_prog <- strsplit(rcc, "\\s+")[[1]][1]
+#'   if (nzchar(Sys.which(rcc_prog))) {
+#'     tmp <- tempfile("hdr3")
+#'     dir.create(tmp)
+#'     path <- file.path(tmp, "p.h")
+#'     writeLines(c("#define TYPE int", "TYPE foo(TYPE x);"), path)
+#'     out <- preprocess_header(path)
+#'     grepl("int foo\\(", out)
+#'   } else {
+#'     message("Skipping preprocess example: compiler not found on PATH")
+#'   }
 #' }
 #' }
 #' @export
@@ -190,8 +190,8 @@ preprocess_headers <- function(
 #' @return The tree root node object
 #' @examples
 #' if (requireNamespace("treesitter", quietly = TRUE)) {
-#'     root <- parse_header_text("int foo(int);\n")
-#'     root
+#'   root <- parse_header_text("int foo(int);\n")
+#'   root
 #' }
 #' @export
 parse_header_text <- function(text, lang = language()) {
@@ -668,6 +668,60 @@ get_struct_nodes <- function(root) {
 #' @return Data frame describing struct members, including bitfields.
 #' @export
 get_struct_members <- function(root) {
+  extract_member_type <- function(field_node) {
+    type_nodes <- find_descendants_by_type(
+      field_node,
+      c(
+        "type_qualifier",
+        "sized_type_specifier",
+        "primitive_type",
+        "type_identifier",
+        "enum_specifier",
+        "struct_specifier",
+        "union_specifier"
+      )
+    )
+
+    if (length(type_nodes) == 0) {
+      return(NA_character_)
+    }
+
+    parts <- lapply(type_nodes, function(n) {
+      sp <- treesitter::node_start_point(n)
+      if (is.null(sp)) {
+        row <- NA_integer_
+        col <- NA_integer_
+      } else if (is.numeric(sp) && length(sp) >= 2) {
+        row <- as.integer(sp[1] + 1L)
+        col <- as.integer(sp[2] + 1L)
+      } else if (is.list(sp) && ("row" %in% names(sp))) {
+        row <- as.integer(sp$row + 1L)
+        col <- as.integer(sp$column + 1L)
+      } else {
+        row <- NA_integer_
+        col <- NA_integer_
+      }
+
+      list(
+        row = row,
+        col = col,
+        text = treesitter::node_text(n)
+      )
+    })
+
+    ord <- order(
+      vapply(parts, `[[`, integer(1), "row"),
+      vapply(parts, `[[`, integer(1), "col")
+    )
+    texts <- vapply(parts[ord], `[[`, character(1), "text")
+    texts <- trimws(texts)
+    texts <- texts[nzchar(texts)]
+    if (length(texts) == 0) {
+      return(NA_character_)
+    }
+    paste(texts, collapse = " ")
+  }
+
   nodes <- find_nodes_by_type(root, c("struct_specifier"))
   out <- list()
   for (n in nodes) {
@@ -680,17 +734,7 @@ get_struct_members <- function(root) {
     # find field_declaration_list inside struct body
     fields <- find_descendants_by_type(n, c("field_declaration"))
     for (f in fields) {
-      # type may be primitive_type or type_identifier or specifier
-      tnode <- find_child_of_type(f, "primitive_type")
-      if (is.null(tnode)) {
-        tnode <- find_child_of_type(f, "type_identifier")
-      }
-      mtype <- if (!is.null(tnode)) {
-        treesitter::node_text(tnode)
-      } else {
-        NA_character_
-      }
-      member_type <- mtype
+      member_type <- extract_member_type(f)
       # find identifier in declarator (direct child, not nested)
       decl <- find_child_of_type(f, "field_identifier")
       if (is.null(decl)) {
@@ -762,7 +806,7 @@ get_struct_members <- function(root) {
       out[[length(out) + 1]] <- list(
         struct_name = struct_name,
         member_name = name,
-        member_type = if (!is.null(member_type)) member_type else mtype,
+        member_type = member_type,
         bitfield = bfval,
         nested_members = if (!is.null(nested_members)) {
           nested_members
@@ -910,6 +954,9 @@ get_globals_from_root <- function(root) {
   out <- list()
   for (n in nodes) {
     id <- find_child_of_type(n, "init_declarator")
+    if (is.null(id)) {
+      id <- find_child_of_type(n, "declarator")
+    }
     if (!is.null(id)) {
       id2 <- find_child_of_type(id, "identifier")
       if (!is.null(id2)) {
@@ -1077,14 +1124,14 @@ get_defines_from_file <- function(
 #'   (either 'declaration' or 'definition').
 #' @examples
 #' if (requireNamespace("treesitter", quietly = TRUE)) {
-#'     # Parse a small header file from a temp dir
-#'     tmp <- tempdir()
-#'     path <- file.path(tmp, "example.h")
-#'     writeLines(c(
-#'         "int foo(int a);",
-#'         "static inline int bar(void) { return 1; }"
-#'     ), path)
-#'     parse_r_include_headers(dir = tmp)
+#'   # Parse a small header file from a temp dir
+#'   tmp <- tempdir()
+#'   path <- file.path(tmp, "example.h")
+#'   writeLines(c(
+#'     "int foo(int a);",
+#'     "static inline int bar(void) { return 1; }"
+#'   ), path)
+#'   parse_r_include_headers(dir = tmp)
 #' }
 #' @export
 parse_r_include_headers <- function(
@@ -1274,8 +1321,8 @@ parse_r_include_headers <- function(
 #' @examples
 #' \dontrun{
 #' if (requireNamespace("treesitter", quietly = TRUE)) {
-#'     res <- parse_headers_collect(dir = R.home("include"), preprocess = FALSE)
-#'     head(res$functions)
+#'   res <- parse_headers_collect(dir = R.home("include"), preprocess = FALSE)
+#'   head(res$functions)
 #' }
 #' }
 #' @export

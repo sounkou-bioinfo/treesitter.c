@@ -10,3 +10,4 @@ src/*.so
 tree-sitter-c/
 README.html
 docs
+*.llm.txt
