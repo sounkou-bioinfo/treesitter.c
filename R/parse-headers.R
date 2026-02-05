@@ -844,6 +844,138 @@ get_struct_members <- function(root) {
   )
 }
 
+#' Extract members of unions
+#'
+#' @param root A tree-sitter root node.
+#' @return Data frame describing union members, including bitfields.
+#' @export
+get_union_members_from_root <- function(root) {
+  extract_member_type <- function(field_node) {
+    type_nodes <- find_descendants_by_type(
+      field_node,
+      c(
+        "type_qualifier",
+        "sized_type_specifier",
+        "primitive_type",
+        "type_identifier",
+        "enum_specifier",
+        "struct_specifier",
+        "union_specifier"
+      )
+    )
+
+    if (length(type_nodes) == 0) {
+      return(NA_character_)
+    }
+
+    parts <- lapply(type_nodes, function(n) {
+      sp <- treesitter::node_start_point(n)
+      if (is.null(sp)) {
+        row <- NA_integer_
+        col <- NA_integer_
+      } else if (is.numeric(sp) && length(sp) >= 2) {
+        row <- as.integer(sp[1] + 1L)
+        col <- as.integer(sp[2] + 1L)
+      } else if (is.list(sp) && ("row" %in% names(sp))) {
+        row <- as.integer(sp$row + 1L)
+        col <- as.integer(sp$column + 1L)
+      } else {
+        row <- NA_integer_
+        col <- NA_integer_
+      }
+
+      text <- treesitter::node_text(n)
+      if (treesitter::node_type(n) %in% c("enum_specifier", "struct_specifier", "union_specifier")) {
+        tid <- find_child_of_type(n, "type_identifier")
+        if (!is.null(tid)) {
+          tag <- sub("_specifier$", "", treesitter::node_type(n))
+          text <- paste(tag, treesitter::node_text(tid))
+        } else {
+          tag <- sub("_specifier$", "", treesitter::node_type(n))
+          text <- tag
+        }
+      }
+
+      list(
+        row = row,
+        col = col,
+        text = text
+      )
+    })
+
+    ord <- order(
+      vapply(parts, `[[`, integer(1), "row"),
+      vapply(parts, `[[`, integer(1), "col")
+    )
+    texts <- vapply(parts[ord], `[[`, character(1), "text")
+    texts <- trimws(texts)
+    texts <- texts[nzchar(texts)]
+    if (length(texts) == 0) {
+      return(NA_character_)
+    }
+    paste(texts, collapse = " ")
+  }
+
+  nodes <- find_nodes_by_type(root, c("union_specifier"))
+  out <- list()
+  for (n in nodes) {
+    union_id <- find_child_of_type(n, "type_identifier")
+    union_name <- if (!is.null(union_id)) {
+      treesitter::node_text(union_id)
+    } else {
+      NA_character_
+    }
+    fields <- find_descendants_by_type(n, c("field_declaration"))
+    for (f in fields) {
+      member_type <- extract_member_type(f)
+      decl <- find_child_of_type(f, "field_identifier")
+      if (is.null(decl)) {
+        decl <- find_child_of_type(f, "identifier")
+      }
+      name <- if (!is.null(decl)) {
+        treesitter::node_text(decl)
+      } else {
+        NA_character_
+      }
+      bf <- find_descendants_by_type(f, c("bitfield_clause"))
+      if (length(bf) >= 1) {
+        bfexpr <- treesitter::node_text(bf[[1]])
+        bfval <- sub("^\\s*:\\s*", "", bfexpr)
+      } else {
+        bfval <- NA_character_
+      }
+
+      out[[length(out) + 1]] <- list(
+        union_name = union_name,
+        member_name = name,
+        member_type = member_type,
+        bitfield = bfval
+      )
+    }
+  }
+
+  if (length(out) == 0) {
+    return(data.frame(
+      union_name = character(0),
+      member_name = character(0),
+      member_type = character(0),
+      bitfield = character(0)
+    ))
+  }
+
+  do.call(
+    rbind,
+    lapply(out, function(x) {
+      data.frame(
+        union_name = x$union_name,
+        member_name = x$member_name,
+        member_type = x$member_type,
+        bitfield = x$bitfield
+      )
+    })
+  )
+}
+
 #' Extract enum names from a parsed header
 #'
 #' @param root A tree-sitter root node.
@@ -887,6 +1019,68 @@ get_enum_nodes <- function(root) {
         capture_name = x$capture_name,
         text = x$text,
         start_line = x$start_line
+      )
+    })
+  )
+}
+
+#' Extract enum members from a parsed header
+#'
+#' @param root A tree-sitter root node.
+#' @return Data frame with enum member names and values.
+#' @export
+get_enum_members_from_root <- function(root) {
+  nodes <- find_nodes_by_type(root, c("enum_specifier"))
+  out <- list()
+  for (n in nodes) {
+    id <- find_child_of_type(n, "type_identifier")
+    enum_name <- if (!is.null(id)) {
+      treesitter::node_text(id)
+    } else {
+      NA_character_
+    }
+    members <- find_descendants_by_type(n, c("enumerator"))
+    for (m in members) {
+      name_node <- treesitter::node_child_by_field_name(m, "name")
+      if (is.null(name_node)) {
+        name_node <- find_child_of_type(m, "identifier")
+      }
+      member_name <- if (!is.null(name_node)) {
+        treesitter::node_text(name_node)
+      } else {
+        NA_character_
+      }
+
+      value_node <- treesitter::node_child_by_field_name(m, "value")
+      member_value <- if (!is.null(value_node)) {
+        treesitter::node_text(value_node)
+      } else {
+        NA_character_
+      }
+
+      out[[length(out) + 1L]] <- list(
+        enum_name = enum_name,
+        member_name = member_name,
+        member_value = member_value
+      )
+    }
+  }
+
+  if (length(out) == 0) {
+    return(data.frame(
+      enum_name = character(0),
+      member_name = character(0),
+      member_value = character(0)
+    ))
+  }
+
+  do.call(
+    rbind,
+    lapply(out, function(x) {
+      data.frame(
+        enum_name = x$enum_name,
+        member_name = x$member_name,
+        member_value = x$member_value
       )
     })
   )
@@ -967,6 +1161,115 @@ get_globals_from_root <- function(root) {
     text = df$text,
     start_line = df$start_line
   )
+}
+
+#' Extract global variables with types from a parsed tree root
+#'
+#' @param root A tree-sitter root node.
+#' @return Data frame with global names and C types.
+#' @export
+get_globals_with_types_from_root <- function(root) {
+  extract_decl_type <- function(decl_node) {
+    type_nodes <- find_descendants_by_type(
+      decl_node,
+      c(
+        "type_qualifier",
+        "sized_type_specifier",
+        "primitive_type",
+        "type_identifier",
+        "enum_specifier",
+        "struct_specifier",
+        "union_specifier"
+      )
+    )
+
+    if (length(type_nodes) == 0) {
+      return(NA_character_)
+    }
+
+    parts <- lapply(type_nodes, function(n) {
+      sp <- treesitter::node_start_point(n)
+      if (is.null(sp)) {
+        row <- NA_integer_
+        col <- NA_integer_
+      } else if (is.numeric(sp) && length(sp) >= 2) {
+        row <- as.integer(sp[1] + 1L)
+        col <- as.integer(sp[2] + 1L)
+      } else if (is.list(sp) && ("row" %in% names(sp))) {
+        row <- as.integer(sp$row + 1L)
+        col <- as.integer(sp$column + 1L)
+      } else {
+        row <- NA_integer_
+        col <- NA_integer_
+      }
+
+      text <- treesitter::node_text(n)
+      if (treesitter::node_type(n) %in% c("enum_specifier", "struct_specifier", "union_specifier")) {
+        tid <- find_child_of_type(n, "type_identifier")
+        if (!is.null(tid)) {
+          tag <- sub("_specifier$", "", treesitter::node_type(n))
+          text <- paste(tag, treesitter::node_text(tid))
+        } else {
+          tag <- sub("_specifier$", "", treesitter::node_type(n))
+          text <- tag
+        }
+      }
+
+      list(
+        row = row,
+        col = col,
+        text = text
+      )
+    })
+
+    ord <- order(
+      vapply(parts, `[[`, integer(1), "row"),
+      vapply(parts, `[[`, integer(1), "col")
+    )
+    texts <- vapply(parts[ord], `[[`, character(1), "text")
+    texts <- trimws(texts)
+    texts <- texts[nzchar(texts)]
+    if (length(texts) == 0) {
+      return(NA_character_)
+    }
+    paste(texts, collapse = " ")
+  }
+
+  patterns <- c(
+    "(declaration declarator: (identifier) @global_name)",
+    "(declaration declarator: (pointer_declarator declarator: (identifier) @global_name))",
+    "(declaration declarator: (init_declarator declarator: (identifier) @global_name))",
+    "(declaration declarator: (init_declarator declarator: (pointer_declarator declarator: (identifier) @global_name)))"
+  )
+  q <- treesitter::query(language(), paste(patterns, collapse = "\n"))
+  caps <- treesitter::query_captures(q, root)
+  df <- captures_to_df(caps)
+  if (nrow(df) == 0) {
+    return(data.frame(
+      capture_name = character(0),
+      text = character(0),
+      start_line = integer(0),
+      c_type = character(0)
+    ))
+  }
+
+  rows <- lapply(seq_len(nrow(df)), function(i) {
+    node <- df$node[[i]]
+    decl <- treesitter::node_parent(node)
+    while (!is.null(decl) && treesitter::node_type(decl) != "declaration") {
+      decl <- treesitter::node_parent(decl)
+    }
+    c_type <- if (!is.null(decl)) extract_decl_type(decl) else NA_character_
+    data.frame(
+      capture_name = df$capture_name[i],
+      text = df$text[i],
+      start_line = df$start_line[i],
+      c_type = c_type
+    )
+  })
+
+  out <- do.call(rbind, rows)
+  out[!duplicated(out[c("text", "start_line", "c_type")]), , drop = FALSE]
 }
 
 #+ Get macro names from a header file using either the preprocessor or a naive scan
