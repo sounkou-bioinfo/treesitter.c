@@ -86,8 +86,8 @@ collections.
 ``` r
 if (FALSE) { # \dontrun{
 if (requireNamespace("treesitter", quietly = TRUE)) {
-    res <- parse_headers_collect(dir = R.home("include"), preprocess = FALSE)
-    head(res$functions)
+  res <- parse_headers_collect(dir = R.home("include"), preprocess = FALSE)
+  head(res$functions)
 }
 } # }
 ```

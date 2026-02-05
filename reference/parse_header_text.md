@@ -26,8 +26,8 @@ The tree root node object
 
 ``` r
 if (requireNamespace("treesitter", quietly = TRUE)) {
-    root <- parse_header_text("int foo(int);\n")
-    root
+  root <- parse_header_text("int foo(int);\n")
+  root
 }
 #> <tree_sitter_node>
 #> 

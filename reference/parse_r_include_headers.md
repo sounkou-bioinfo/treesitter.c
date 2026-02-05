@@ -80,16 +80,16 @@ A data frame with columns `name`, `file`, `line`, and `kind` (either
 
 ``` r
 if (requireNamespace("treesitter", quietly = TRUE)) {
-    # Parse a small header file from a temp dir
-    tmp <- tempdir()
-    path <- file.path(tmp, "example.h")
-    writeLines(c(
-        "int foo(int a);",
-        "static inline int bar(void) { return 1; }"
-    ), path)
-    parse_r_include_headers(dir = tmp)
+  # Parse a small header file from a temp dir
+  tmp <- tempdir()
+  path <- file.path(tmp, "example.h")
+  writeLines(c(
+    "int foo(int a);",
+    "static inline int bar(void) { return 1; }"
+  ), path)
+  parse_r_include_headers(dir = tmp)
 }
 #>   name                      file line        kind
-#> 1  foo /tmp/Rtmpg7wmVs/example.h    1 declaration
-#> 2  bar /tmp/Rtmpg7wmVs/example.h    2  definition
+#> 1  foo /tmp/RtmpZiUpSC/example.h    1 declaration
+#> 2  bar /tmp/RtmpZiUpSC/example.h    2  definition
 ```
