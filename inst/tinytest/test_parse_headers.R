@@ -141,6 +141,13 @@ root <- parse_header_text(paste(readLines(path), collapse = "\n"))
 caps <- get_enum_nodes(root)
 expect_true(is.data.frame(caps) && any(grepl("Color", caps$text)))
 
+# get_enum_members_from_root returns enum members
+members <- get_enum_members_from_root(root)
+expect_true(is.data.frame(members))
+expect_true(any(members$member_name == "RED"))
+expect_true(any(members$member_name == "BLUE"))
+expect_true(any(members$member_name == "GREEN"))
+
 # get_union_nodes returns union names
 tmp <- tempfile("hdr8")
 dir.create(tmp)
@@ -149,6 +156,12 @@ writeLines(c("union U { int a; float b; };"), path)
 root <- parse_header_text(paste(readLines(path), collapse = "\n"))
 caps <- get_union_nodes(root)
 expect_true(is.data.frame(caps) && any(grepl("U", caps$text)))
+
+# get_union_members_from_root returns union members
+members <- get_union_members_from_root(root)
+expect_true(is.data.frame(members))
+expect_true(any(members$member_name == "a"))
+expect_true(any(members$member_name == "b"))
 
 # get_struct_members detect bitfields
 tmp <- tempfile("hdr10")
@@ -165,6 +178,17 @@ expect_true(any(members$member_name == "x" & grepl("1", members$bitfield)))
 expect_true(any(members$member_name == "y" & grepl("4", members$bitfield)))
 expect_true(any(members$member_name == "z"))
 # No nested struct in this header
+
+# get_globals_with_types_from_root returns names and types
+tmp <- tempfile("hdr_globals")
+dir.create(tmp)
+path <- file.path(tmp, "g.h")
+writeLines(c("int global_counter;", "double global_pi;"), path)
+root <- parse_header_text(paste(readLines(path), collapse = "\n"))
+globals <- get_globals_with_types_from_root(root)
+expect_true(is.data.frame(globals))
+expect_true(any(globals$text == "global_counter" & grepl("int", globals$c_type)))
+expect_true(any(globals$text == "global_pi" & grepl("double", globals$c_type)))
 
 # get_struct_members returns nested anonymous struct members
 tmp <- tempfile("hdr11")
