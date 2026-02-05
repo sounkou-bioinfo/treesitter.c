@@ -5,11 +5,14 @@
 <url><loc>https://sounkou-bioinfo.github.io/treesitter.c/news/index.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/fake_libc_path.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/get_defines_from_file.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/get_enum_members_from_root.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/get_enum_nodes.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/get_function_nodes.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/get_globals_from_root.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/get_globals_with_types_from_root.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/get_struct_members.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/get_struct_nodes.html</loc></url>
+<url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/get_union_members_from_root.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/get_union_nodes.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/index.html</loc></url>
 <url><loc>https://sounkou-bioinfo.github.io/treesitter.c/reference/language.html</loc></url>

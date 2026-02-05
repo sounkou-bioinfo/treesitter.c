@@ -13,6 +13,9 @@
   available; otherwise, a simple scan of `#define` lines is used as a
   fallback.
 
+- [`get_enum_members_from_root()`](https://sounkou-bioinfo.github.io/treesitter.c/reference/get_enum_members_from_root.md)
+  : Extract enum members from a parsed header
+
 - [`get_enum_nodes()`](https://sounkou-bioinfo.github.io/treesitter.c/reference/get_enum_nodes.md)
   : Extract enum names from a parsed header
 
@@ -22,12 +25,18 @@
 - [`get_globals_from_root()`](https://sounkou-bioinfo.github.io/treesitter.c/reference/get_globals_from_root.md)
   : Extract global variable names from a parsed tree root
 
+- [`get_globals_with_types_from_root()`](https://sounkou-bioinfo.github.io/treesitter.c/reference/get_globals_with_types_from_root.md)
+  : Extract global variables with types from a parsed tree root
+
 - [`get_struct_members()`](https://sounkou-bioinfo.github.io/treesitter.c/reference/get_struct_members.md)
   : Extract members of structs (including nested anonymous struct
   members)
 
 - [`get_struct_nodes()`](https://sounkou-bioinfo.github.io/treesitter.c/reference/get_struct_nodes.md)
   : Extract struct names from a parsed tree root
+
+- [`get_union_members_from_root()`](https://sounkou-bioinfo.github.io/treesitter.c/reference/get_union_members_from_root.md)
+  : Extract members of unions
 
 - [`get_union_nodes()`](https://sounkou-bioinfo.github.io/treesitter.c/reference/get_union_nodes.md)
   : Extract union names from a parsed header
