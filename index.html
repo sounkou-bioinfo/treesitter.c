@@ -211,9 +211,9 @@
 <span><span class="co">#&gt;   capture_name text start_line</span></span>
 <span><span class="co">#&gt; 1  struct_name    T          1</span></span>
 <span><span class="fu"><a href="reference/get_struct_members.html">get_struct_members</a></span><span class="op">(</span><span class="va">root</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   struct_name member_name member_type bitfield nested_members</span></span>
-<span><span class="co">#&gt; 1           T           x        &lt;NA&gt;        1           &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 2           T           y         int     &lt;NA&gt;           &lt;NA&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;   struct_name member_name      member_type bitfield nested_members</span></span>
+<span><span class="co">#&gt; 1           T           x unsigned int int        1           &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2           T           y              int     &lt;NA&gt;           &lt;NA&gt;</span></span></code></pre></div>
 <p>Collect a directory with all kinds using <code>parse_headers_collect</code></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/parse_headers_collect.html">parse_headers_collect</a></span><span class="op">(</span>dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Rhome.html" class="external-link">R.home</a></span><span class="op">(</span><span class="st">"include"</span><span class="op">)</span>, preprocess <span class="op">=</span> <span class="cn">FALSE</span>, extract_params <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
