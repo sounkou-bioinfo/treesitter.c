@@ -90,6 +90,6 @@ if (requireNamespace("treesitter", quietly = TRUE)) {
     parse_r_include_headers(dir = tmp)
 }
 #>   name                      file line        kind
-#> 1  foo /tmp/RtmpiSP2hm/example.h    1 declaration
-#> 2  bar /tmp/RtmpiSP2hm/example.h    2  definition
+#> 1  foo /tmp/Rtmpg7wmVs/example.h    1 declaration
+#> 2  bar /tmp/Rtmpg7wmVs/example.h    2  definition
 ```
