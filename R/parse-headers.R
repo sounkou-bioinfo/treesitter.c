@@ -946,56 +946,27 @@ get_union_nodes <- function(root) {
 #' @return Data frame with top-level global names.
 #' @export
 get_globals_from_root <- function(root) {
-  # declarations at the top-level: parent is translation_unit
-  q <- treesitter::query(
-    language(),
-    "(declaration declarator: (init_declarator declarator: (identifier) @global_name))"
+  # Top-level declarations with simple and pointer declarators
+  patterns <- c(
+    "(declaration (init_declarator declarator: (identifier) @global_name))",
+    "(declaration (init_declarator declarator: (pointer_declarator declarator: (identifier) @global_name)))",
+    "(declaration (declarator (identifier) @global_name))",
+    "(declaration (declarator (pointer_declarator declarator: (identifier) @global_name)))"
   )
-  nodes <- find_nodes_by_type(root, c("declaration"))
-  out <- list()
-  for (n in nodes) {
-    id <- find_child_of_type(n, "init_declarator")
-    if (is.null(id)) {
-      id <- find_child_of_type(n, "declarator")
-    }
-    if (!is.null(id)) {
-      id2 <- find_child_of_type(id, "identifier")
-      if (!is.null(id2)) {
-        text <- treesitter::node_text(id2)
-        sp <- treesitter::node_start_point(id2)
-        if (is.null(sp)) {
-          sl <- NA_integer_
-        } else if (is.numeric(sp) && length(sp) >= 2) {
-          sl <- as.integer(sp[1] + 1L)
-        } else if (is.list(sp) && ("row" %in% names(sp))) {
-          sl <- as.integer(sp$row + 1L)
-        } else {
-          sl <- NA_integer_
-        }
-        out[[length(out) + 1L]] <- list(
-          capture_name = "global_name",
-          text = text,
-          start_line = sl
-        )
-      }
-    }
-  }
-  if (length(out) == 0L) {
+  q <- treesitter::query(language(), paste(patterns, collapse = "\n"))
+  caps <- treesitter::query_captures(q, root)
+  df <- captures_to_df(caps)
+  if (nrow(df) == 0) {
     return(data.frame(
       capture_name = character(0),
       text = character(0),
       start_line = integer(0)
     ))
   }
-  do.call(
-    rbind,
-    lapply(out, function(x) {
-      data.frame(
-        capture_name = x$capture_name,
-        text = x$text,
-        start_line = x$start_line
-      )
-    })
+  data.frame(
+    capture_name = df$capture_name,
+    text = df$text,
+    start_line = df$start_line
   )
 }
 
