@@ -56,13 +56,13 @@ typically where R's headers live.
 }
 \examples{
 if (requireNamespace("treesitter", quietly = TRUE)) {
-    # Parse a small header file from a temp dir
-    tmp <- tempdir()
-    path <- file.path(tmp, "example.h")
-    writeLines(c(
-        "int foo(int a);",
-        "static inline int bar(void) { return 1; }"
-    ), path)
-    parse_r_include_headers(dir = tmp)
+  # Parse a small header file from a temp dir
+  tmp <- tempdir()
+  path <- file.path(tmp, "example.h")
+  writeLines(c(
+    "int foo(int a);",
+    "static inline int bar(void) { return 1; }"
+  ), path)
+  parse_r_include_headers(dir = tmp)
 }
 }

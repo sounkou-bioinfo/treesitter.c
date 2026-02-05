@@ -19,7 +19,7 @@ Convert character content of a header file into a tree-sitter root
 }
 \examples{
 if (requireNamespace("treesitter", quietly = TRUE)) {
-    root <- parse_header_text("int foo(int);\n")
-    root
+  root <- parse_header_text("int foo(int);\n")
+  root
 }
 }

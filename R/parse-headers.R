@@ -220,27 +220,28 @@ walk_tree <- function(node, visitor, parents = list()) {
 #' Find descendant nodes of the root that match a given node type
 #' @noRd
 find_nodes_by_type <- function(root, types) {
-  out <- list()
-  visitor <- function(node, parents) {
-    if (treesitter::node_type(node) %in% types) {
-      out[[length(out) + 1L]] <<- node
-    }
+  if (!requireNamespace("treesitter", quietly = TRUE)) {
+    stop("treesitter required", call. = FALSE)
   }
-  walk_tree(root, visitor)
-  out
+  if (length(types) == 0) {
+    return(list())
+  }
+  patterns <- paste(sprintf("(%s) @node", types), collapse = "\n")
+  q <- treesitter::query(language(), patterns)
+  caps <- treesitter::query_captures(q, root)
+  if (is.null(caps) || length(caps) == 0) {
+    return(list())
+  }
+  if (!"node" %in% names(caps)) {
+    stop("query_captures() did not return nodes", call. = FALSE)
+  }
+  caps$node
 }
 
 #' Find descendant nodes (within 'root') that match any of the 'types'
 #' @noRd
 find_descendants_by_type <- function(root, types) {
-  out <- list()
-  visitor <- function(node, parents) {
-    if (treesitter::node_type(node) %in% types) {
-      out[[length(out) + 1L]] <<- node
-    }
-  }
-  walk_tree(root, visitor)
-  out
+  find_nodes_by_type(root, types)
 }
 
 #' Find the first child node of 'node' with type matching 'type'

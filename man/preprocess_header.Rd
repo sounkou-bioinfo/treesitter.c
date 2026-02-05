@@ -33,17 +33,17 @@ flag and returns the combined preprocessed output as a single string.
 # Check for a compiler before running an example that invokes the preprocessor
 rcc <- treesitter.c::r_cc()
 if (nzchar(rcc)) {
-    rcc_prog <- strsplit(rcc, "\\\\s+")[[1]][1]
-    if (nzchar(Sys.which(rcc_prog))) {
-        tmp <- tempfile("hdr3")
-        dir.create(tmp)
-        path <- file.path(tmp, "p.h")
-        writeLines(c("#define TYPE int", "TYPE foo(TYPE x);"), path)
-        out <- preprocess_header(path)
-        grepl("int foo\\\\(", out)
-    } else {
-        message("Skipping preprocess example: compiler not found on PATH")
-    }
+  rcc_prog <- strsplit(rcc, "\\\\s+")[[1]][1]
+  if (nzchar(Sys.which(rcc_prog))) {
+    tmp <- tempfile("hdr3")
+    dir.create(tmp)
+    path <- file.path(tmp, "p.h")
+    writeLines(c("#define TYPE int", "TYPE foo(TYPE x);"), path)
+    out <- preprocess_header(path)
+    grepl("int foo\\\\(", out)
+  } else {
+    message("Skipping preprocess example: compiler not found on PATH")
+  }
 }
 }
 }
