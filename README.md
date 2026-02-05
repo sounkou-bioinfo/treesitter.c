@@ -187,9 +187,9 @@ get_struct_nodes(root)
 #>   capture_name text start_line
 #> 1  struct_name    T          1
 get_struct_members(root)
-#>   struct_name member_name member_type bitfield nested_members
-#> 1           T           x        <NA>        1           <NA>
-#> 2           T           y         int     <NA>           <NA>
+#>   struct_name member_name      member_type bitfield nested_members
+#> 1           T           x unsigned int int        1           <NA>
+#> 2           T           y              int     <NA>           <NA>
 ```
 
 Collect a directory with all kinds using `parse_headers_collect`
