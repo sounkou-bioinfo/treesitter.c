@@ -946,83 +946,26 @@ get_union_nodes <- function(root) {
 #' @return Data frame with top-level global names.
 #' @export
 get_globals_from_root <- function(root) {
-  nodes <- find_nodes_by_type(root, c("declaration"))
-  out <- list()
-
-  for (n in nodes) {
-    # collect identifiers that are part of global declarators
-    walk_tree(n, function(node, parents) {
-      if (treesitter::node_type(node) != "identifier") {
-        return(NULL)
-      }
-
-      parent_types <- vapply(parents, treesitter::node_type, character(1))
-
-      # Skip function declarations and non-global contexts
-      if ("function_declarator" %in% parent_types) {
-        return(NULL)
-      }
-      if ("parameter_declaration" %in% parent_types) {
-        return(NULL)
-      }
-      if ("field_declaration" %in% parent_types) {
-        return(NULL)
-      }
-      if ("field_declarator" %in% parent_types) {
-        return(NULL)
-      }
-      if ("enum_specifier" %in% parent_types) {
-        return(NULL)
-      }
-      if ("enumerator" %in% parent_types) {
-        return(NULL)
-      }
-      if ("type_definition" %in% parent_types) {
-        return(NULL)
-      }
-
-      # Keep only identifiers under declarator/init_declarator
-      if (!("declarator" %in% parent_types || "init_declarator" %in% parent_types)) {
-        return(NULL)
-      }
-
-      text <- treesitter::node_text(node)
-      sp <- treesitter::node_start_point(node)
-      if (is.null(sp)) {
-        sl <- NA_integer_
-      } else if (is.numeric(sp) && length(sp) >= 2) {
-        sl <- as.integer(sp[1] + 1L)
-      } else if (is.list(sp) && ("row" %in% names(sp))) {
-        sl <- as.integer(sp$row + 1L)
-      } else {
-        sl <- NA_integer_
-      }
-      out[[length(out) + 1L]] <<- list(
-        capture_name = "global_name",
-        text = text,
-        start_line = sl
-      )
-      NULL
-    })
-  }
-
-  if (length(out) == 0L) {
+  patterns <- c(
+    "(declaration declarator: (identifier) @global_name)",
+    "(declaration declarator: (pointer_declarator declarator: (identifier) @global_name))",
+    "(declaration declarator: (init_declarator declarator: (identifier) @global_name))",
+    "(declaration declarator: (init_declarator declarator: (pointer_declarator declarator: (identifier) @global_name)))"
+  )
+  q <- treesitter::query(language(), paste(patterns, collapse = "\n"))
+  caps <- treesitter::query_captures(q, root)
+  df <- captures_to_df(caps)
+  if (nrow(df) == 0) {
     return(data.frame(
       capture_name = character(0),
       text = character(0),
       start_line = integer(0)
     ))
   }
-
-  do.call(
-    rbind,
-    lapply(out, function(x) {
-      data.frame(
-        capture_name = x$capture_name,
-        text = x$text,
-        start_line = x$start_line
-      )
-    })
+  data.frame(
+    capture_name = df$capture_name,
+    text = df$text,
+    start_line = df$start_line
   )
 }
 
