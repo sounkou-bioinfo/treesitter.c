@@ -41,14 +41,14 @@ tree <- parser_parse(parser, code)
 tree
 #> <tree_sitter_tree>
 #> 
-#> ── Text ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── Text ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> struct Point {
 #>   int x[MAX_SIZE];
 #>   int y;
 #> };
 #> 
 #> 
-#> ── S-Expression ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#> ── S-Expression ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 #> (translation_unit [(1, 0), (5, 0)]
 #>   (struct_specifier [(1, 0), (4, 1)]
 #>     "struct" [(1, 0), (1, 6)]
@@ -93,16 +93,16 @@ hdr_df_pp <- parse_r_include_headers(
   )
 hdr_df_pp[grepl("Rf", x = hdr_df_pp$name), ] |> head(10)
 #>                  name                                   file line        kind
-#> 1483         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2522 declaration
-#> 1486       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2528 declaration
-#> 1495       Rf_revsort /usr/share/R/include/R_ext/Callbacks.h 2567 declaration
-#> 1496        Rf_iPsort /usr/share/R/include/R_ext/Callbacks.h 2568 declaration
-#> 1497        Rf_rPsort /usr/share/R/include/R_ext/Callbacks.h 2569 declaration
-#> 1498        Rf_cPsort /usr/share/R/include/R_ext/Callbacks.h 2570 declaration
-#> 1503   Rf_StringFalse /usr/share/R/include/R_ext/Callbacks.h 2586 declaration
-#> 1504    Rf_StringTrue /usr/share/R/include/R_ext/Callbacks.h 2587 declaration
-#> 1505 Rf_isBlankString /usr/share/R/include/R_ext/Callbacks.h 2588 declaration
-#> 1557        Rf_asChar /usr/share/R/include/R_ext/Callbacks.h 2922 declaration
+#> 1633         Rf_error /usr/share/R/include/R_ext/Callbacks.h 2708 declaration
+#> 1636       Rf_warning /usr/share/R/include/R_ext/Callbacks.h 2714 declaration
+#> 1645       Rf_revsort /usr/share/R/include/R_ext/Callbacks.h 2753 declaration
+#> 1646        Rf_iPsort /usr/share/R/include/R_ext/Callbacks.h 2754 declaration
+#> 1647        Rf_rPsort /usr/share/R/include/R_ext/Callbacks.h 2755 declaration
+#> 1648        Rf_cPsort /usr/share/R/include/R_ext/Callbacks.h 2756 declaration
+#> 1653   Rf_StringFalse /usr/share/R/include/R_ext/Callbacks.h 2772 declaration
+#> 1654    Rf_StringTrue /usr/share/R/include/R_ext/Callbacks.h 2773 declaration
+#> 1655 Rf_isBlankString /usr/share/R/include/R_ext/Callbacks.h 2774 declaration
+#> 1707        Rf_asChar /usr/share/R/include/R_ext/Callbacks.h 3108 declaration
 ```
 
 You can use the `preprocess_header` function with extra compiler options
@@ -218,9 +218,9 @@ head(res$functions)
 path <- file.path(R.home("include"), "Rembedded.h")
 defs <- get_defines_from_file(path, use_cpp = TRUE, ccflags = paste("-I", dirname(path)))
   head(defs)
-#> [1] "__DBL_MIN_EXP__"         "__UINT_LEAST16_MAX__"   
-#> [3] "_STDBOOL_H"              "__FLT16_HAS_QUIET_NAN__"
-#> [5] "__ATOMIC_ACQUIRE"        "__FLT128_MAX_10_EXP__"
+#> [1] "__DBL_MIN_EXP__"         "__LDBL_MANT_DIG__"      
+#> [3] "__UINT_LEAST16_MAX__"    "__FLT16_HAS_QUIET_NAN__"
+#> [5] "__ATOMIC_ACQUIRE"        "__WCHAR_MAX__"
 ```
 
 ## Details On the Used Grammar
