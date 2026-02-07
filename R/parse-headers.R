@@ -9,12 +9,17 @@
 #' @return Character scalar with compiler program (or empty string).
 #' @export
 r_cc <- function() {
-  envcc <- Sys.getenv("CC")
-  if (nzchar(envcc)) {
+  # Check if some TREESITTER_CC is set or not
+  envcc <- Sys.getenv("TREESITTER_CC")
+  if (nzchar(envcc) > 0) {
     return(envcc)
   }
   # Prefer using the R binary from R.home('bin') to avoid depending on PATH
   rprog <- file.path(R.home("bin"), "R")
+  # on windows this should be R.exe
+  if (.Platform$OS.type == "windows") {
+    rprog <- paste0(rprog, ".exe")
+  }
   if (file.exists(rprog) && file.access(rprog, 1) == 0) {
     out <- tryCatch(
       suppressWarnings(system2(
