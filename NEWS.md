@@ -1,3 +1,7 @@
+# tressiter.c 0.0.4.1 
+
+- Fix bug in tinytest synthax
+
 # tressiter.c 0.0.4
 
 -  CRAN submission

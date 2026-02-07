@@ -1,4 +1,7 @@
 # parse_r_include_headers detects declarations and definitions
+# redundant library loading for direct Rscript execution of this test file
+library(tinytest)
+library(treesitter.c)
 tmp <- tempfile("hdr")
 dir.create(tmp)
 path <- file.path(tmp, "example.h")
@@ -20,19 +23,19 @@ expect_true(any(res$name == "bar" & res$kind == "definition"))
 expect_true(any(res$name == "baz" & res$kind == "declaration"))
 
 # preprocessing uses R CMD config CC when requested
-# Skip if we have no compiler reported by R CMD config CC
+# exit_file if we have no compiler reported by R CMD config CC
 rcc_raw <- treesitter.c::r_cc()
 if (!nzchar(rcc_raw)) {
-  skip("No C compiler from R CMD config CC; skipping preprocess test")
+  exit_file("No C compiler from R CMD config CC; exit_fileping preprocess test")
 }
 rcc_parts <- unlist(strsplit(rcc_raw, "\\s+"))
 rcc_prog <- rcc_parts[1]
 # Ensure the compiler itself is available on PATH (we don't care about MSVC), e.g. Rtools gcc
 if (!nzchar(Sys.which(rcc_prog))) {
-  skip(paste0(
+  exit_file(paste0(
     "C compiler '",
     rcc_prog,
-    "' not found on PATH; skipping preprocess test"
+    "' not found on PATH; exit_fileping preprocess test"
   ))
 }
 
@@ -56,11 +59,11 @@ expect_true(nrow(res) >= 1)
 # parse_r_include_headers include_dirs preserves declarations (Rf names)
 rcc <- treesitter.c::r_cc()
 if (!nzchar(rcc)) {
-  skip("No C compiler; skipping preprocess include_dirs test")
+  exit_file("No C compiler; exit_fileping preprocess include_dirs test")
 }
 rcc_prog <- strsplit(rcc, "\\s+")[[1]][1]
 if (!nzchar(Sys.which(rcc_prog))) {
-  skip("C compiler not on PATH; skipping test")
+  exit_file("C compiler not on PATH; exit_fileping test")
 }
 
 # Parse a system header with and without include_dirs; ensure preprocessed parse
@@ -81,15 +84,15 @@ expect_true(any(
 # preprocess_header returns preprocessed text
 rcc <- treesitter.c::r_cc()
 if (!nzchar(rcc)) {
-  skip("No C compiler from R CMD config CC; skipping preprocess_header test")
+  exit_file("No C compiler from R CMD config CC; exit_fileping preprocess_header test")
 }
 rcc_parts <- unlist(strsplit(rcc_raw, "\\s+"))
 rcc_prog <- rcc_parts[1]
 if (!nzchar(Sys.which(rcc_prog))) {
-  skip(paste0(
+  exit_file(paste0(
     "C compiler '",
     rcc_prog,
-    "' not found on PATH; skipping preprocess_header test"
+    "' not found on PATH; exit_fileping preprocess_header test"
   ))
 }
 tmp <- tempfile("hdr3")
@@ -212,7 +215,7 @@ expect_true(any(members$member_name == "c"))
 # get_defines_from_file uses preprocessor when available
 rcc <- treesitter.c::r_cc()
 if (!nzchar(rcc)) {
-  skip("No C compiler; skipping preprocessor test")
+  exit_file("No C compiler; exit_fileping preprocessor test")
 }
 
 tmp <- tempfile("hdr6")
