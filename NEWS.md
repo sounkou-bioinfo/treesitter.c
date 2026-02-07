@@ -1,4 +1,4 @@
-# tressiter.c 0.0.3
+# tressiter.c 0.0.4
 
 -  CRAN submission
 
